@@ -26,6 +26,8 @@ GEM
       sass (>= 3.3.0, < 3.5)
     compass-import-once (1.0.5)
       sass (>= 3.2, < 3.5)
+    domain_name (0.5.24)
+      unf (>= 0.0.5, < 1.0.0)
     em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
@@ -33,12 +35,15 @@ GEM
     eventmachine (1.0.4)
     execjs (2.2.2)
     ffi (1.9.6)
+    gli (2.13.0)
     haml (4.0.6)
       tilt
     hike (1.2.3)
     hitimes (1.2.2)
     hooks (0.4.0)
       uber (~> 0.0.4)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     http_parser.rb (0.6.0)
     i18n (0.6.11)
     json (1.8.2)
@@ -48,6 +53,13 @@ GEM
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
+    localeapp (0.9.3)
+      gli
+      i18n
+      json
+      rack
+      rest-client
+      ya2yaml
     middleman (3.3.7)
       coffee-script (~> 2.2)
       compass (>= 1.0.0, < 2.0.0)
@@ -85,8 +97,10 @@ GEM
     middleman-syntax (2.0.0)
       middleman-core (~> 3.2)
       rouge (~> 1.0)
+    mime-types (2.4.3)
     minitest (5.5.1)
     multi_json (1.10.1)
+    netrc (0.10.3)
     padrino-helpers (0.12.4)
       i18n (~> 0.6, >= 0.6.7)
       padrino-support (= 0.12.4)
@@ -104,6 +118,10 @@ GEM
       ffi (>= 0.5.0)
     redcarpet (3.2.2)
     ref (1.0.5)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
     rouge (1.7.2)
     ruby18_source_location (0.2)
     sass (3.4.9)
@@ -131,11 +149,16 @@ GEM
     uglifier (2.7.0)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
+    ya2yaml (0.31)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  localeapp
   middleman (~> 3.3.0)
   middleman-gh-pages
   middleman-livereload (~> 3.3.0)

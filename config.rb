@@ -1,3 +1,7 @@
+activate :i18n,  mount_at_root: :it
+
+require '.localeapp/config'
+
 set :css_dir, 'stylesheets'
 
 set :js_dir, 'javascripts'

@@ -3,8 +3,6 @@ title: API Reference
 
 language_tabs:
   - shell
-  - ruby
-  - python
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -16,43 +14,52 @@ includes:
 search: true
 ---
 
-# Introduction
+# Hello Developers.
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Abbiamo rilasciato la prima versione delle Api TimeRepublik per permettere una maggiore integrazione dei servizi offerti da TRK con le vostre APP.
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+Se avete un idea che possa ampliare l'user experience di Timerepublik non esistate a contatatrci per richiedere una chiave di accesso ai Web Service pubblici di TRK.
 
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+# Getting Started
+
+Per accedere alle api avrete bisongo di:
+
+- Richiedere a Timerepublik una coppia di chiavi client_id e client_secret specifici per la vostra applicazione. 
+- Utilizzare client_id e opzionalmente client_secret per richiedere un access_token a timerepublik usando il protocollo Oauth 2 https://tools.ietf.org/html/rfc6749
+- Esplorare i vari endpoint di TRK passando ad ogni richiesta l'access token ottenuto. 
+
+Il server Oauth Timerepublik è configurato per autenticarsi tramite 
+
+- 4.1.  Authorization Code Grant
+- 4.3.  Resource Owner Password Credentials Grant
 
 # Authentication
 
+`http://timerepublik.com/oauth/token`
+
+POST 
+
+
+
 > To authorize, use this code:
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+curl --data 'client_id=YOUR_CLIENT_ID&grant_type=password&username=USER_EMAIL&password=USER_PASSWORD' http://timerepublik.com/oauth/token
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+> assicurati di impostare `YOUR_CLIENT_ID` `USER_EMAIL` e `USER_PASSWORD` con i parametri corretti.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+> In risposta il server ritornerà l'access_token da utilizzare nelle chiamate successive.
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+```json
+{"access_token":"ffeb8b661600ee464eb82592dd143810638da818a5cdb292f2c0e493141ae963","token_type":"bearer","expires_in":604800,"scope":"public","created_at":1431100101}
+```
+> risposta 401 in caso di errore (client_id non autorizzato o login errato)
 
-`Authorization: meowmeowmeow`
+```json
+{"error":"invalid_grant","error_description":"The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client."}
+```
+
 
 <aside class="notice">
 You must replace `meowmeowmeow` with your personal API key.
@@ -61,20 +68,6 @@ You must replace `meowmeowmeow` with your personal API key.
 # Kittens
 
 ## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
 
 ```shell
 curl "http://example.com/api/kittens"
@@ -120,20 +113,6 @@ Remember — a happy kitten is an authenticated kitten!
 </aside>
 
 ## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
 
 ```shell
 curl "http://example.com/api/kittens/3"
