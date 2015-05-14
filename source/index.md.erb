@@ -6,7 +6,7 @@ language_tabs:
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
+  - <a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a>
 
 includes:
   - errors
@@ -14,37 +14,141 @@ includes:
 search: true
 ---
 
-# Hello Developers.
+# TimeRepublik Rest API's
 
 Abbiamo rilasciato la prima versione delle Api TimeRepublik per permettere una maggiore integrazione dei servizi offerti da TRK con le vostre APP.
 
-Se avete un idea che possa ampliare l'user experience di Timerepublik non esistate a contatatrci per richiedere una chiave di accesso ai Web Service pubblici di TRK.
+La API REST qui descritta permette un accesso in lettura e scrittura a tutte le funzionalità della piattaforma Time Republik.
 
-# Getting Started
+Gli utenti sono identificati tramite protocollo Oauth2; Il formato delle risposte è JSON.  
 
-Per accedere alle api avrete bisongo di:
+# Oauth Authentication
 
-- Richiedere a Timerepublik una coppia di chiavi client_id e client_secret specifici per la vostra applicazione. 
-- Utilizzare client_id e opzionalmente client_secret per richiedere un access_token a timerepublik usando il protocollo Oauth 2 https://tools.ietf.org/html/rfc6749
-- Esplorare i vari endpoint di TRK passando ad ogni richiesta l'access token ottenuto. 
+## Introduzione
 
 Il server Oauth Timerepublik è configurato per autenticarsi tramite 
 
-- 4.1.  Authorization Code Grant
-- 4.3.  Resource Owner Password Credentials Grant
+- Authorization Code Grant (3-legged)
+- Resource Owner Password Credentials Grant
 
-# Authentication
+Capire il funzionamento di oauth è essenziale per la creazione di applicazioni che utilizzino le API TRK. 
 
-`http://timerepublik.com/oauth/token`
+Per autorizzare uno specifico utente ad accedere alle api dovete: 
 
-POST 
+- Richiedere (se non lo avete già fatto) a Timerepublik una coppia di chiavi client_id e client_secret specifici per la vostra applicazione.
+- Richiedere un access_token che vi permetterà di accedere alle api nel ruolo di un utente, utilizzando il protocollo Oauth2.
+- Includere l'access_token in tutte le richieste HTTP verso le API; includendo nell'header delle richieste {"Authorization: Bearer YOUR_ACCESS_TOKEN"}
 
 
+I paragrafi seguenti illustrano il funzionamento base di OAuth.
 
-> To authorize, use this code:
+## Authorization Code Flow
+Utile per integrare Timerepublik con un qualsiasi servizio WEB. 
+E' probabilmnete il metodo di autorizzazione piu' utilizzato. 
+
+Consiste nello scambio di un codice di autorizzazione per un access_token, per i dettagli si consiglia di consultare l'rfc OAUTH https://tools.ietf.org/html/rfc6749#section-4.1
+
+Come anticipato, il primo passo è quello di richiedere al team di sviluppo di TimeRepublik una coppia di chiavi che rappresentano la vostra app (client_id e client_secret), indicando inoltre l'url di callback per permettere agli utenti della vostra app di continuare l'accesso dopo l'autorizzazione.
+
+### Richiesta di autorizzazione
+
+Per ottenere il token di autorizzazione dovete eseguire un redirect o far seguire un link  dalla vostra applicazione verso l'endpoint 
+
+> Richiesta di autenticazione Oauth
 
 ```shell
-curl --data 'client_id=YOUR_CLIENT_ID&grant_type=password&username=USER_EMAIL&password=USER_PASSWORD' http://timerepublik.com/oauth/token
+open https://timerepublik.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code
+```
+
+
+GET: `https://timerepublik.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code`
+
+
+sostituendo con i parametri corretti YOUR_CLIENT_ID e YOUR_REDIRECT_URI.
+
+All'utente verrà chiesto di autenticarsi in TimeRepublik inserendo le proprie credenziali. 
+
+Alla fine della procedura di autenticazione Timerepublik redirigerà l'utente nuovamente alla vostra app, all'indirizzo YOUR_REDIRECT_URI che avete passato in parametro.
+
+Tra i parametri della richiesta che Timerepublik farà al vostro servizio troverete il vostro authorization_code. 
+
+Ora non resta che scambiarlo per un access_token.
+
+### Richiedere l'access token
+
+L'authorization_code puo' essere scambiato con un access token tramite una chiamata POST server<->server all'endpoint
+
+> Esempio di richiesta access_token
+
+```shell
+curl --data 'client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=authorization_code&redirect_uri=YOUR_REDIRECT_URI&code=RETURNED_AUTHORIZATION_CODE' \
+'https://timerepublik.com/oauth/token'
+```
+
+> Risposta in caso di successo
+
+```json
+{
+  "access_token":"fa591d5b92be3ba7bc5c2c10be938901aa2c5c932cf9f312e5e2660d235dbe46",
+  "token_type":"bearer",
+  "expires_in":604800,
+  "scope":"public",
+  "created_at":1431526714
+}
+```
+
+> Risposta in caso di fallimento (http status 401)
+
+```json
+{
+  "error":"invalid_grant",
+  "error_description":"The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client."
+}
+```
+
+
+`https://timerepublik.com/oauth/token`
+
+dovete includere i seguenti parametri :
+
+Parametri | Descrizione
+--------- | -----------
+client_id | Il vostro CLIENT_ID 
+client_secret | Il vostro CLIENT_SECRET
+code | l'authorization code ritornato dalla procedura precedente
+grant_type | Impostare a 'authorization_code'
+redirect_uri | Il parametro YOUR_REDIRECT_URI utilizzato in precedenza
+
+In risposta otterrete qualcosa di simile a 
+
+`json
+{
+  "access_token": "fa591d5b92be3ba7bc5c2c10be938901aa2c5c932cf9f312e5e2660d235dbe46",
+  "token_type": "bearer",
+  "expires_in": 604800,
+  "scope": "public",
+  "created_at": 1431526714
+}
+`
+
+Risposta | Descrizione
+--------- | -----------
+access_token | L'access token generato per l'utente che si è autenticato.
+expires_in | Il tempo di validità del token in secondi a partire da created_at
+created_at | L'effettiva data di creazione del token
+
+
+## Resource Owner Password Credentials Grant
+
+Quando non è possibile utilizzare "Authorization code flow" è possibile richiedere direttamente un access_token passando le credenziali dell'utente. 
+
+Timerepublik consente anche l'accesso tramite single sign on di facebook e twitter, è prevista una variante del Password Credentials Grant che consente l'accesso utilizzando le credenziali Facebook/Teitter. 
+
+> Resource Owner Password Credentials Grant
+
+
+```shell
+curl --data 'client_id=YOUR_CLIENT_ID&grant_type=password&username=USER_EMAIL&password=USER_PASSWORD' https://timerepublik.com/oauth/token
 ```
 
 > assicurati di impostare `YOUR_CLIENT_ID` `USER_EMAIL` e `USER_PASSWORD` con i parametri corretti.
@@ -52,84 +156,428 @@ curl --data 'client_id=YOUR_CLIENT_ID&grant_type=password&username=USER_EMAIL&pa
 > In risposta il server ritornerà l'access_token da utilizzare nelle chiamate successive.
 
 ```json
-{"access_token":"ffeb8b661600ee464eb82592dd143810638da818a5cdb292f2c0e493141ae963","token_type":"bearer","expires_in":604800,"scope":"public","created_at":1431100101}
+{
+  "access_token": "ffeb8b661600ee464eb82592dd143810638da818a5cdb292f2c0e493141ae963",
+  "token_type": "bearer",
+  "expires_in": 604800,
+  "scope": "public",
+  "created_at": 1431100101
+}
 ```
+
 > risposta 401 in caso di errore (client_id non autorizzato o login errato)
 
 ```json
-{"error":"invalid_grant","error_description":"The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client."}
+{
+  "error": "invalid_grant",
+  "error_description": "The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client."
+}
 ```
 
+
+L'endpoint da chiamare per ottenere l'access_token è :
+
+`POST: https://timerepublik.com/oauth/token`
+
+i parametri da utilizzare sono 
+
+Parametri | Descrizione
+--------- | -----------
+grant_type | impostare a 'password'
+username | email dell'utente
+password | la password dell'utente
 
 <aside class="notice">
-You must replace `meowmeowmeow` with your personal API key.
+NOTE: Pasword Credential Grant non neccessita di client_id e client_secret
 </aside>
 
-# Kittens
+In risposta otterrete qualcosa di simile a 
 
-## Get All Kittens
+`json
+{"access_token":"fa591d5b92be3ba7bc5c2c10be938901aa2c5c932cf9f312e5e2660d235dbe46","token_type":"bearer","expires_in":604800,"scope":"public","created_at":1431526714}
+`
+
+Risposta | Descrizione
+--------- | -----------
+access_token | L'access token generato per l'utente che si è autenticato.
+expires_in | Il tempo di validità del token in secondi a partire da created_at
+created_at | L'effettiva data di creazione del token
+
+
+### Password credential grant Facebook/Twitter
+
+E' possibile scambiare un access_token ottenuto da Facebook/Twitter per l'app TimeRepublik con un access_token 
+TimeRepublik.
+
+> Password Credential grant per facebook
 
 ```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+curl --data 'grant_type=password&username=1123961800&trusted_token=CACoHZC3D1e4BAMJ2QhR8XZBe44glLLTBN7KuZBFH4I2ZB3w60tJWjoLgp3ZAasXNVkQzZABI158GaBcGsTx5cvx1ZA5a0yiwUZCKK78ZAZAj05wSenwgHkrvpbgUZCYs8vNfvpPfgcO64sb7QZBDNIrUJEx5f4q6ec3mvNQa6SsQ4ZAp6s1vlowMgiUM7ZBJUmir1ZAVYZD&provider=facebook' 'https://timerepublik.com/oauth/token'
 ```
 
-> The above command returns JSON structured like this:
+> Password credential grant per Twitter
+
+```shell
+curl --data 'grant_type=password&username=35727806&trusted_token=35707806-Ke9GVcSHIXoXGSQhQEgMUMIl7Y2bsGrCawdO2vSd0&trusted_secret=lY4mOe2omuYSDh3kUOa1agpdzpLtCXqJvrpwAKjYEcA4f&provider=twitter' 'https://timerepublik.com/oauth/token'
+```
+
+Endpoint: 
+
+`POST: https://timerepublik.com/oauth/token`
+
+i parametri da utilizzare sono 
+
+Parametri | Descrizione
+--------- | -----------
+grant_type | impostare a 'password'
+username | L'object ID Facebook/Twitter corrispondente all'utente
+trusted_token | access_token ottenuto da Facebook/twitter
+trusted_secret | impostare con l'access_secret (solo per twitter)
+provider | impostare a 'facebook' o 'twitter' a seconda della provenienza del token
+
+Timerepublik verificherà la validità del Token di autenticazione e genererà a sua volta un access_token per l'utente 
+che deve essersi registrato almento una volta utilizzando il proprio profilo social a TimeRepublik.
+
+ 
+
+# Registrazione nuovo utente
+
+## Registrare un utente tramite API
+
+```shell
+curl --data "user[email]=example@email.com&user[password]=asdasd&user[password_confirmation]=asdasd&user[im_sixteen]=true&user[terms_of_service]=true&user[locale]=it" https://timerepublik.com/api/v1/registrations
+```
+
+> In caso di successo http status 200
 
 ```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
+{
+  "id": 1012,
+  "email": "azaup.a@gmail.com",
+  "username": null,
+  "first_name": null,
+  "last_name": null,
+  "avatar": null,
+  "bio": null,
+  "gender": null,
+  "time_available": 0,
+  "time_earned": 0,
+  "time_spent": 0,
+  "trustmeter": 0,
+  "avg_rating": null,
+  "units": "km",
+  "time_zone": null,
+  "locale": "it",
+  "public_profile": true,
+  "location": {
+    "latitude": null,
+    "longitude": null
   },
-  {
-    "id": 2,
-    "name": "Isis",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
+  "distance": null,
+  "tag_ids": [],
+  "talent_ids": [],
+  "created_at": "2015-05-14T12:13:40.088Z",
+  "updated_at": "2015-05-14T12:13:40.088Z",
+  "role": null,
+  "email_privacy": 0,
+  "cover": null,
+  "gender_privacy": 2,
+  "birthday": null,
+  "birthday_privacy": 2,
+  "phone": null,
+  "phone_privacy": 0,
+  "address": null,
+  "address_privacy": 0,
+  "city": null,
+  "city_privacy": 2,
+  "state": null,
+  "state_privacy": 2,
+  "country": null,
+  "country_privacy": 2,
+  "zip": null,
+  "zip_privacy": 2,
+  "skype": null,
+  "facebook": null,
+  "twitter": null,
+  "linkedin": null,
+  "website": null,
+  "vkontakte": null,
+  "odnoklasniki": null,
+  "tags_count": 0,
+  "requests_count": 0,
+  "offers_count": 0,
+  "deals_count": 0,
+  "awards_count": 0,
+  "referer_count": 0,
+  "favoritings_count": 0,
+  "inverse_favoritings_count": 0,
+  "new_awards": 0,
+  "delta": true,
+  "group": null,
+  "latitude": null,
+  "longitude": null,
+  "tags": [],
+  "talents": [],
+  "favorites": [],
+  "awards": [],
+  "timetrackers": [],
+  "registration_completed_at": null,
+  "attachments": [],
+  "notification_new_message": true,
+  "notification_new_bulletin_post": true,
+  "notification_new_favorite": true,
+  "notification_award_gained": true,
+  "notification_notify_new_friend_user": true,
+  "notification_notify_new_bulletin_post": true,
+  "notification_notify_request_expiration": true,
+  "notification_notify_deal_payment": true,
+  "notification_notify_inactivity_user": true,
+  "notification_instant_pay": true
+}
 ```
 
-This endpoint retrieves all kittens.
+> in caso di errore http status 422 Unprocessable Entity
+
+```json
+{
+  "errors": {
+    "email": [
+      "Email \u00e8 gi\u00e0 in uso"
+    ],
+    "im_sixteen": [
+      "Per registrarti a TIMEREPUBLIK, devi aver compiuto i 16 anni di et\u00e0"
+    ]
+  },
+  "error_code": 2001,
+  "error_message": "Validation Error"
+}
+```
+
+> Per avere i messaggi di errore in una lingua diversa passare un parametro aggiuntivo locale=CODICE_LOCALE
+
+L'endpoint permette la registrazione di un nuovo utente direttamente tramite API
 
 ### HTTP Request
 
-`GET http://example.com/kittens`
+`POST https://timerepublik.com/api/v1/registrations`
 
-### Query Parameters
 
-Parameter | Default | Description
+### Parametri Obbligatori
+
+`
+{
+user:{
+  email: "",
+  password: "",
+  password_confirmation: "",
+  im_sixteen: true,
+  terms_of_service: true,
+  locale: "it"
+  }
+}
+`
+
+
+### Parametri
+
+Parameter | Type | Description
 --------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+user[email] | string | Indirizzo Email dell'utente. Deve essere univoco in Timerepublik
+user[password] | string | Password, almeno 6 caratteri
+user[password_confirmation] | string | Ripetere la password
+user[im_sixteen] | boolean | true se l'utente ha già compiuto 16 anni
+user[terms_of_service] | boolean | confermare che l'utente ha preso visione dei termini di servizio
+user[locale] | string | Codice identificativo della lingua preferita dell'utente. 
+user[referer] | string | (opzionale) indicare il codice referer
 
 <aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+Per il solo endpoint di registrazione non è richiesto un access_token.
 </aside>
 
-## Get a Specific Kitten
+### Parametri opzionali per registrazione con Facebook/Twitter Token
+
+Per permettere la registrazione anche da App con Facebook/Twitter, questa deve essere implementata lato app e 
+devono essere passati a timerepublik i parametri di accesso validi in fase di registrazione. 
+
+> Registrazione con Twitter/Facebook 
 
 ```shell
-curl "http://example.com/api/kittens/3"
-  -H "Authorization: meowmeowmeow"
+curl --data "user[email]=email@gmail.com&user[password]=asdasd&user[password_confirmation]=asdasd&user[im_sixteen]=true&user[terms_of_service]=true&user[locale]=it&user[auth_provider][trusted_token]=25707806-Ke9GVcSHIXoXGSQhQEgMUMIl7Y2bsGrCawdO2vSd0&user[auth_provider][trusted_secret]=aY4mOejomuYSDh3kUOa1agpdzpLtCXqJvrpwAKjYEcA4f&user[auth_provider][uid]=35727806&user[auth_provider][provider]=twitter" https://timerepublik.com/api/v1/registrations
+```
+
+Parameter | Type | Description
+--------- | ------- | -----------
+user[auth_provider][trusted_token] | string | access_token valido per Facebook/Twitter
+user[auth_provider][trusted_secret] | string | solo per twitter, access_secret
+user[auth_provider][uid] | string | l'uid dell'utente su social network
+user[auth_provider][provider] | string | facebook o twitter
+
+Nel caso questi parametri siano presenti verrà validato l'access_token del social network e gli accessi memorizzati assieme all'utente per permettere l'autenticazione con singol sign on Facebook/Twitter.
+
+# Endpoint Profilo Utente /me
+
+Grazie a questo endpoint è possibile ottenere ed aggiornare le informazioni legate al profilo utente 
+
+
+## Dettagli profilo utente
+
+
+```shell
+curl "https://timerepublik.com/api/v1/me.json"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Isis",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "id": 1,
+  "email": "enrico@megiston.it",
+  "username": "pioz",
+  "first_name": "Enrico",
+  "last_name": "Pilotto",
+  "avatar": null,
+  "bio": null,
+  "gender": null,
+  "time_available": 0,
+  "time_earned": 0,
+  "time_spent": 0,
+  "trustmeter": 0,
+  "avg_rating": null,
+  "units": "km",
+  "time_zone": null,
+  "locale": "it",
+  "public_profile": true,
+  "location": {
+    "latitude": -87.53277059192833,
+    "longitude": -127.91044935296776
+  },
+  "distance": null,
+  "tag_ids": [
+    842691406
+  ],
+  "talent_ids": [
+    11
+  ],
+  "created_at": "2015-05-14T15:07:24.000Z",
+  "updated_at": "2015-05-14T15:07:24.000Z",
+  "email_privacy": 0,
+  "cover": null,
+  "gender_privacy": 2,
+  "birthday": null,
+  "birthday_privacy": 2,
+  "phone": null,
+  "phone_privacy": 0,
+  "address": "1431 Schmidt Unions",
+  "address_privacy": 0,
+  "city": "Octaviafurt",
+  "city_privacy": 2,
+  "state": "Wisconsin",
+  "state_privacy": 2,
+  "country": "Malta",
+  "country_privacy": 2,
+  "zip": "90743",
+  "zip_privacy": 2,
+  "skype": null,
+  "facebook": null,
+  "twitter": null,
+  "linkedin": null,
+  "website": null,
+  "vkontakte": null,
+  "odnoklasniki": null,
+  "tags_count": 0,
+  "requests_count": 0,
+  "offers_count": 0,
+  "deals_count": 0,
+  "awards_count": 0,
+  "referer_count": 0,
+  "favoritings_count": 0,
+  "inverse_favoritings_count": 0,
+  "new_awards": 0,
+  "delta": true,
+  "group": null,
+  "latitude": -87.53277059192833,
+  "longitude": -127.91044935296776,
+  "tags": [
+    {
+      "id": 842691406,
+      "list": [],
+      "active": true,
+      "position": 0.0,
+      "talent_id": 11
+    }
+  ],
+  "talents": [
+    {
+      "id": 11,
+      "name": "Mason",
+      "position": 0.0,
+      "slug": null,
+      "icon": null,
+      "tags_count": 0,
+      "talent_category_id": 6,
+      "created_at": "2015-05-14T15:07:24.000Z",
+      "updated_at": "2015-05-14T15:07:24.000Z"
+    }
+  ],
+  "favorites": [],
+  "timetrackers": [],
+  "awards": [],
+  "registration_completed_at": "2015-05-14T15:07:24.000Z",
+  "attachments": [],
+  "notification_new_message": true,
+  "notification_new_bulletin_post": true,
+  "notification_new_favorite": true,
+  "notification_award_gained": true,
+  "notification_notify_new_friend_user": true,
+  "notification_notify_new_bulletin_post": true,
+  "notification_notify_request_expiration": true,
+  "notification_notify_deal_payment": true,
+  "notification_notify_inactivity_user": true,
+  "notification_instant_pay": true
 }
 ```
+
+
+### HTTP Request
+
+`http://timerepublik.com/api/v1/me.json`
+
+
+<aside class="info">
+Inserire nell header di ogni richiesta un access_token valido <br>
+Authorization: Bearer YOUR_ACCESS_TOKEN
+</aside>
+
+### Parametri opzionali
+
+E' possibile limitare il numero dei campi ritornati nel json di risposta specificando a quali campi si è interessati
+in un parametro fields (array o valori separati da virgola).
+
+Serializzare i parametri 
+
+> Limitare i campi ritornati nel JSON 
+
+```shell
+curl -H "Authorization: Bearer 53733610d2c1199a81e4f2fe88af4725e67adb3dcfe5fafa12ac2aef70cc41ac" "https://timerepublik.com/api/v1/me.json?fields\[\]=phone&fields\[\]=email"
+```
+
+> oppure 
+
+```shell
+curl -H "Authorization: Bearer 53733610d2c1199a81e4f2fe88af4725e67adb3dcfe5fafa12ac2aef70cc41ac" "https://timerepublik.com/api/v1/me.json?fields=phone,email"
+```
+
+> Risultato 
+
+```json
+{
+  "email": "azaup.a@gmail.com",
+  "phone": null
+}
+```
+
+
 
 This endpoint retrieves a specific kitten.
 
@@ -137,7 +585,7 @@ This endpoint retrieves a specific kitten.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET https://example.com/kittens/<ID>`
 
 ### URL Parameters
 
