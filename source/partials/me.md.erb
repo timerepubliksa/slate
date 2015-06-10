@@ -1,0 +1,495 @@
+
+# Profilo Utente /me
+
+Grazie a questo endpoint è possibile ottenere ed aggiornare le informazioni legate al profilo utente 
+
+
+## Dettagli profilo utente
+
+
+```shell
+curl "https://timerepublik.com/api/v1/me.json"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "id": 1,
+  "email": "enrico@megiston.it",
+  "username": "pioz",
+  "first_name": "Enrico",
+  "last_name": "Pilotto",
+  "avatar": null,
+  "bio": null,
+  "gender": null,
+  "time_available": 0,
+  "time_earned": 0,
+  "time_spent": 0,
+  "trustmeter": 0,
+  "avg_rating": null,
+  "units": "km",
+  "time_zone": null,
+  "locale": "it",
+  "public_profile": true,
+  "location": {
+    "latitude": -87.53277059192833,
+    "longitude": -127.91044935296776
+  },
+  "distance": null,
+  "tag_ids": [
+    842691406
+  ],
+  "talent_ids": [
+    11
+  ],
+  "created_at": "2015-05-14T15:07:24.000Z",
+  "updated_at": "2015-05-14T15:07:24.000Z",
+  "email_privacy": 0,
+  "cover": null,
+  "gender_privacy": 2,
+  "birthday": null,
+  "birthday_privacy": 2,
+  "phone": null,
+  "phone_privacy": 0,
+  "address": "1431 Schmidt Unions",
+  "address_privacy": 0,
+  "city": "Octaviafurt",
+  "city_privacy": 2,
+  "state": "Wisconsin",
+  "state_privacy": 2,
+  "country": "Malta",
+  "country_privacy": 2,
+  "zip": "90743",
+  "zip_privacy": 2,
+  "skype": null,
+  "facebook": null,
+  "twitter": null,
+  "linkedin": null,
+  "website": null,
+  "vkontakte": null,
+  "odnoklasniki": null,
+  "tags_count": 0,
+  "requests_count": 0,
+  "offers_count": 0,
+  "deals_count": 0,
+  "awards_count": 0,
+  "referer_count": 0,
+  "favoritings_count": 0,
+  "inverse_favoritings_count": 0,
+  "new_awards": 0,
+  "delta": true,
+  "group": null,
+  "latitude": -87.53277059192833,
+  "longitude": -127.91044935296776,
+  "tags": [
+    {
+      "id": 842691406,
+      "list": [],
+      "active": true,
+      "position": 0.0,
+      "talent_id": 11
+    }
+  ],
+  "talents": [
+    {
+      "id": 11,
+      "name": "Mason",
+      "position": 0.0,
+      "slug": null,
+      "icon": null,
+      "tags_count": 0,
+      "talent_category_id": 6,
+      "created_at": "2015-05-14T15:07:24.000Z",
+      "updated_at": "2015-05-14T15:07:24.000Z"
+    }
+  ],
+  "favorites": [],
+  "timetrackers": [],
+  "awards": [],
+  "registration_completed_at": "2015-05-14T15:07:24.000Z",
+  "attachments": [],
+  "notification_new_message": true,
+  "notification_new_bulletin_post": true,
+  "notification_new_favorite": true,
+  "notification_award_gained": true,
+  "notification_notify_new_friend_user": true,
+  "notification_notify_new_bulletin_post": true,
+  "notification_notify_request_expiration": true,
+  "notification_notify_deal_payment": true,
+  "notification_notify_inactivity_user": true,
+  "notification_instant_pay": true
+}
+```
+
+
+### HTTP Request
+
+`GET: http://timerepublik.com/api/v1/me.json`
+
+
+<aside class="info">
+Inserire nell header di ogni richiesta un access_token valido <br>
+Authorization: Bearer YOUR_ACCESS_TOKEN
+</aside>
+
+### Parametri opzionali
+
+E' possibile limitare il numero dei campi ritornati nel json di risposta specificando a quali campi si è interessati
+in un parametro fields (array o valori separati da virgola).
+
+
+> Limitare i campi ritornati nel JSON 
+
+```shell
+curl -H "Authorization: Bearer 53733610d2c1199a81e4f2fe88af4725e67adb3dcfe5fafa12ac2aef70cc41ac" "https://timerepublik.com/api/v1/me.json?fields\[\]=phone&fields\[\]=email"
+```
+
+> oppure 
+
+```shell
+curl -H "Authorization: Bearer 53733610d2c1199a81e4f2fe88af4725e67adb3dcfe5fafa12ac2aef70cc41ac" "https://timerepublik.com/api/v1/me.json?fields=phone,email"
+```
+
+> Risultato 
+
+```json
+{
+  "email": "azaup.a@gmail.com",
+  "phone": null
+}
+```
+
+
+## Aggiornare le informazioni del profilo utente
+
+### HTTP Request
+
+`PUT/POST: http://timerepublik.com/api/v1/me.json`
+
+> Esempio di modifica dati utente
+
+```shell
+curl --data "user[birthday]=201-01983-01-20&user[gender_privacy]=0&user[email]='test@test.com'" -H "Authorization: Bearer 53733610d2c1199a81e4f2fe88af4725e67adb3dcfe5fafa12ac2aef70cc41ac" https://timerepublik.com/api/v1/me.json
+```
+
+> Successo, HTTP status 200
+
+```json
+{
+  "email": "azaup.a@gmail.com",
+  "birthday": "1983-01-20",
+  "gender_privacy": 0
+}
+```
+
+> Errore, HTTP status 422
+
+```json
+{
+  "errors": {
+    "birthday": [
+      "Deve avere almeno 16 anni per registrarti"
+    ]
+  },
+  "error_code": 2001,
+  "error_message": "Validation Error"
+}
+```
+
+> Se si preferisce avere l'oggetto completo in risposta
+
+```bash
+curl --data "fields=all&user[birthday]=201-01983-01-20&user[gender_privacy]=0&user[email]='test@test.com'" -H "Authorization: Bearer 53733610d2c1199a81e4f2fe88af4725e67adb3dcfe5fafa12ac2aef70cc41ac" https://timerepublik.com/api/v1/me.json
+```
+
+> Risposta 
+
+```json
+{
+  "id": 1010,
+  "email": "azaup.a@gmail.com",
+  "username": null,
+  "first_name": "Andrea",
+  "last_name": "Zaupa",
+  "avatar": {
+    "url": "/uploads/avatars/1010/5ff8fa9594cad9c9b7daa2b280faf3d1_48830_1143961800_5953639_n_bigger.jpg",
+    "little": {
+      "url": "/uploads/avatars/1010/little_5ff8fa9594cad9c9b7daa2b280faf3d1_48830_1143961800_5953639_n_bigger.jpg"
+    },
+    "small": {
+      "url": "/uploads/avatars/1010/small_5ff8fa9594cad9c9b7daa2b280faf3d1_48830_1143961800_5953639_n_bigger.jpg"
+    },
+    "medium": {
+      "url": "/uploads/avatars/1010/medium_5ff8fa9594cad9c9b7daa2b280faf3d1_48830_1143961800_5953639_n_bigger.jpg"
+    },
+    "default": {
+      "url": "/uploads/avatars/1010/default_5ff8fa9594cad9c9b7daa2b280faf3d1_48830_1143961800_5953639_n_bigger.jpg"
+    },
+    "big": {
+      "url": "/uploads/avatars/1010/big_5ff8fa9594cad9c9b7daa2b280faf3d1_48830_1143961800_5953639_n_bigger.jpg"
+    },
+    "bigger": {
+      "url": "/uploads/avatars/1010/bigger_5ff8fa9594cad9c9b7daa2b280faf3d1_48830_1143961800_5953639_n_bigger.jpg"
+    }
+  },
+  "bio": "wind of change",
+  "gender": null,
+  "time_available": 6300,
+  "time_earned": 6300,
+  "time_spent": 0,
+  "trustmeter": 14,
+  "avg_rating": null,
+  "units": "km",
+  "time_zone": null,
+  "locale": "it",
+  "public_profile": true,
+  "location": {
+    "latitude": null,
+    "longitude": null
+  },
+  "distance": null,
+  "tag_ids": [],
+  "talent_ids": [],
+  "created_at": "2015-05-14T15:16:46.000Z",
+  "updated_at": "2015-05-15T13:40:33.687Z",
+  "email_privacy": 0,
+  "cover": null,
+  "gender_privacy": 0,
+  "birthday": null,
+  "birthday_privacy": 2,
+  "phone": null,
+  "phone_privacy": 0,
+  "address": null,
+  "address_privacy": 0,
+  "city": null,
+  "city_privacy": 2,
+  "state": null,
+  "state_privacy": 2,
+  "country": null,
+  "country_privacy": 2,
+  "zip": null,
+  "zip_privacy": 2,
+  "skype": null,
+  "facebook": null,
+  "twitter": "https://twitter.com/azaupa",
+  "linkedin": null,
+  "website": "http://blog.azaupa.info",
+  "vkontakte": null,
+  "odnoklasniki": null,
+  "tags_count": 0,
+  "requests_count": 0,
+  "offers_count": 0,
+  "deals_count": 0,
+  "awards_count": 0,
+  "referer_count": 0,
+  "favoritings_count": 0,
+  "inverse_favoritings_count": 0,
+  "new_awards": 0,
+  "delta": true,
+  "group": null,
+  "latitude": null,
+  "longitude": null,
+  "tags": [],
+  "talents": [],
+  "favorites": [],
+  "timetrackers": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    },
+    {
+      "id": 3
+    },
+    {
+      "id": 4
+    },
+    {
+      "id": 5
+    }
+  ],
+  "awards": [],
+  "registration_completed_at": null,
+  "attachments": [],
+  "notification_new_message": true,
+  "notification_new_bulletin_post": true,
+  "notification_new_favorite": true,
+  "notification_award_gained": true,
+  "notification_notify_new_friend_user": true,
+  "notification_notify_new_bulletin_post": true,
+  "notification_notify_request_expiration": true,
+  "notification_notify_deal_payment": true,
+  "notification_notify_inactivity_user": true,
+  "notification_instant_pay": true
+}
+```
+
+### Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+user[first_name]|string| Nome utente
+user[last_name]|string| Cognome utente
+user[gender]|string| Sesso ("M" o "F")
+user[gender_privacy]|fixnum| gender_privacy
+user[birthday]|date| Data di nascita
+user[birthday_privacy]|fixnum|birthday_privacy
+user[phone]|string| Telefono
+user[phone_privacy]|fixnum|phone_privacy
+user[bio]|string| Descrizione profilo
+user[avatar]|avatar_uploader| Avatar, multipart base64 file encoding
+user[avatar_remote_url]| string| Avatar, salvato da un url remoto
+user[cover]|cover_uploader| Cover profilo, multipart base64 file encoding
+user[skype]|string| Skype name
+user[facebook]|string| url profilo facebook
+user[twitter]|string| url profilo twitter
+user[linkedin]|string| url profilo linkedin
+user[website]|string| url website dell'utente
+user[vkontakte]|string| url vkontakte
+user[odnoklasniki]|string|url odnoklasniki
+user[address]|string| Indirizzo (via)
+user[address_privacy]|fixnum| address_privacy
+user[city]|string| Coune
+user[city_privacy]|fixnum|city_privacy
+user[state]|string| Provincia (sigla)
+user[state_privacy]|fixnum|state_privacy
+user[country]|string| Nazione (sigla)
+user[country_privacy]|fixnum|country_privacy
+user[zip]|string| zip o cap
+user[zip_privacy]|fixnum|zip_privacy
+user[address_string]|string| Indirizzo da geolocalizzare (in alternativa a location)
+user[location][latitude]| string| latitudine, obbligatoria se longitudine settata 
+user[location][longitude]|string| longitudine, obbligatoria se latitudine settata
+user[location][full_address]| string| Indirizzo completo in formato standard (verrà geolocalizzato)
+user[email]|string| Email utente (neccessita di current_password)
+user[current_password]|string| passowrd corrente dell'utente, necessaria se si cambiano email o username
+user[password]|string| Aggiornamento password utente
+user[password_confirmation]|string| Aggiornamento password utente, conferma password
+user[username]|string| Aggiornamento username, neccessita di current_password
+user[locale]|string| Lingua preferita dall'utente (sigla)
+user[units]|string| Unità di misura preferita dall'utente (km)
+user[time_zone]|string| time_zone Utente (formato standard Rome, London, ...)
+user[public_profile]|boolean| Limita la visibilità pubblica del profilo utente.
+user[help_dialog]|boolean| Campo di servizio, nasconde la guida al primo accesso web.
+user[deactivated]|boolean| Disabilita il profilo.
+user[talent_ids]|array| Lista di ID Talenti (o id separati da ,)
+user[notification_new_message]|boolean| Nuova notifica notification_new_message
+user[notification_new_bulletin_post]|boolean| Nuova notifica notification_new_bulletin_post
+user[notification_new_favorite]|boolean| Nuova notifica notification_new_favorite
+user[notification_award_gained]|boolean| Nuova notifica notification_award_gained
+user[notification_notify_new_friend_user]|boolean| Nuova notifica notification_notify_new_friend_user
+user[notification_notify_new_bulletin_post]|boolean| Nuova notifica notification_notify_new_bulletin_post
+user[notification_notify_request_expiration]|boolean| Nuova notifica notification_notify_request_expiration
+user[notification_notify_deal_payment]|boolean| Nuova notifica notification_notify_deal_payment
+user[notification_notify_inactivity_user]|boolean| Nuova notifica notification_notify_inactivity_user
+user[notification_instant_pay]|boolean| Nuova notifica notification_instant_pay
+
+Non è necessario inviare tutti i campi ad ogni richiesta di update.
+
+<aside class="info">Il valore dei campi privacy_ deve essere (0|1|2), 0 nessuno, 1 solo amici, 2 tutti </aside>
+<aside class="info"> I campi avatar e cover si aspettano una POST multipart di un file</aside>
+<aside class="info"> Passare date e datetime nel formato standard "2015-05-15" o "2015-05-15T12:40:07.582Z" </aside>
+<aside class="info"> Se si cambia il campo email, questa verrà salvata come 'da confermare' e aggiornata solamente all'effetiva conferma (tramite una mail inviata al nuovo indirizzo) </aside>
+
+<aside class="warning"> La registrazione viene considerata completa se è possibile geolocalizzare l'indirizzo del utente, se sono presenti email, nome, cognome e se è stato collegato almento 1 talento. <br> Fintanto che la registrazione non è completa l'accesso alle api è limitato. </aside>
+
+
+### Risposta
+
+Il corpo della risposta è sempre in formato text/json.
+
+
+HTTP status 200 , utente salvato con successo, il JSON rappresenta l'utente a cui sono state applicate le modifiche richieste.
+
+HTTP status 422 unprocessable_entity, Errore nel salvataggio, verrà ritornato uno JSON contentente gli errori di validazione.
+
+Nel caso di successo, il JSON ritornato conterrà solamente i campi modificati, per visualizzare l'intero JSON modificato aggiungere il parametro fields=all alla chiamata.
+
+## Creazione e modifica allegati.
+
+### HTTP Request
+
+`POST: http://timerepublik.com/api/v1/me/upload_file.json`
+
+Replica la funzione di modifica del profilo per la gestione dei soli allegati.
+
+Chiamata Post multipart.
+
+> Esempio di creazione allegato, cover utente.
+
+```shell
+curl -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7" -v -include --form name="user[cover]" --form upload=@yourfile.jpg https://timerepublik.com/api/v1/me/upload_file
+```
+
+> Esempio aggiunta di un allgeato immagine al profilo user[attachments_attributes][][file]
+
+```shell
+curl -H "Authorization: Bearer e945b336a28520e728ae260c9769a05bb890a46435a5613a2bc5d0ccf97ada37" -F "user[attachments_attributes][][file]=@./test.jpg;type=image/jpg" https://timerepublik.com/api/v1/me/upload_file
+```
+
+> Modifica di un allegato essitente id=1
+```shell
+curl -H "Authorization: Bearer e945b336a28520e728ae260c9769a05bb890a46435a5613a2bc5d0ccf97ada37" -F "user[attachments_attributes][][privacy]=1" -F"user[attachments_attributes][][id]=1" https://timerepublik.com/api/v1/me/upload_file
+```
+
+> Rimozione di un allegato id=1
+
+```shell
+curl -H "Authorization: Bearer e945b336a28520e728ae260c9769a05bb890a46435a5613a2bc5d0ccf97ada37" -F "user[attachments_attributes][][_destroy]=1" -F"user[attachments_attributes][][id]=1" https://timerepublik.com/api/v1/me/upload_file
+```
+
+
+> Successo, HTTP status 200
+
+```json
+{
+  "attachments": [
+    {
+      "id": 8,
+      "file": {
+        "url": "/uploads/attachments/8/8c9b11b598d407a880f6426a6b977e8f_test.jpg",
+        "preview": {
+          "url": "/uploads/attachments/8/preview_8c9b11b598d407a880f6426a6b977e8f_test.png"
+        },
+        "bigger_preview": {
+          "url": "/uploads/attachments/8/bigger_preview_8c9b11b598d407a880f6426a6b977e8f_test.png"
+        },
+        "small_preview": {
+          "url": "/uploads/attachments/8/small_preview_8c9b11b598d407a880f6426a6b977e8f_test.png"
+        },
+        "small_retina_preview": {
+          "url": "/uploads/attachments/8/small_retina_preview_8c9b11b598d407a880f6426a6b977e8f_test.png"
+        },
+        "message_preview": {
+          "url": "/uploads/attachments/8/message_preview_8c9b11b598d407a880f6426a6b977e8f_test.png"
+        },
+        "message_preview_retina": {
+          "url": "/uploads/attachments/8/message_preview_retina_8c9b11b598d407a880f6426a6b977e8f_test.png"
+        }
+      },
+      "privacy": 2,
+      "created_at": "2015-06-08T14:02:25.000+02:00",
+      "updated_at": "2015-06-08T14:02:25.000+02:00"
+    }
+  ]
+}
+```
+
+
+### Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+user[cover] | file | caricamento o modifica della cover utente.
+user[avatar] | file | caricamento o modifica dell'avatar utente.
+user[attachments_attributes][][file]|file| (modifica e creazione allegato) il file in formato multipart da caricare.
+user[attachments_attributes][][id]|integer| (solo modifica allegato) l'id dell'allegato da modificare.
+user[attachments_attributes][][privacy]|integer| (modifica e creazione allegato) cambia i campi privacy (1,2,3), parametro id obbligatorio in caso di modifica.
+user[attachments_attributes][][_destroy]|boolean| (cancellazione allegato) se a 1 distrugge l'allegato, parametro id obbligatorio.
+
+<aside class="info"> E' possibile modificare piu' allegati con un unica chiamata, inserire l'indice nell'array, a.e. user[attachments_attributes][0][file]=... user[attachments_attributes][1][file]=...  </aside>
+
+

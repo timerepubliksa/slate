@@ -1,0 +1,117 @@
+# Search
+
+La funzionalità di ricerca delle api vi mpermette di ricercare Utenti, Richieste Offerte e Messaggi di Timerepublik in un endpoint unificato. 
+
+## Ricerca Globale
+
+> La ricerca viene effettuata su tutti gli attributi testuali di Utenti, Richieste e Offerte.
+
+> Chiamata di esempio, vengono ritornati tutti i risultati contenenti il termine 'web'
+
+```shell
+curl "https://timerepublik.com/api/v1/search.json?q=web"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+`GET: http://timerepublik.com/api/v1/search.json`
+
+### Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+q|string|esegue una full text search di utenti richieste ed offerte
+
+Non è prevista paginazione e il limite della cardinalità dei risultati è settato da timerepublik.
+
+Veine ritornato un JSON con la seguente struttura
+
+{
+  users: [ ],
+  requests: [ ],
+  offers: [ ]
+}
+
+## Ricerca Utenti
+
+`GET: http://timerepublik.com/api/v1/users.json`
+
+```shell
+curl "https://timerepublik.com/api/v1/users?q=user&talent_id=9,8&per_page=1&page=1"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+> Esempio Risposta
+
+```json
+[  
+  {  
+    id:1007,
+    email:"private",
+    username:"user_7",
+    first_name:"Paxton",
+    last_name:"Hauck",
+    avatar:null,
+    bio:null,
+    gender:null,
+    time_available:0,
+    time_earned:0,
+    time_spent:0,
+    trustmeter:68,
+    avg_rating:1,
+    units:"km",
+    time_zone:null,
+    locale:"fr",
+    public_profile:true,
+    location:{  
+      latitude:88.43309913678243,
+      longitude:-152.38986569744617
+    },
+    distance:5091.52,
+    tag_ids:[  
+      860287398,
+      53216558,
+      709861406,
+      71418165,
+      491294857
+    ],
+    talent_ids:[  
+      1,
+      6,
+      7,
+      9,
+      11
+    ],
+    address:"private"
+  }
+]
+```
+
+### Parametri accettati 
+
+deve essere presente almeno uno dei parametri q,talent_id,latitude
+
+Anche in questo caso, aggiungengo il parametro fields andiamo a modificare la struttura del Json ritornato.
+
+Parameter | Type | Description
+--------- | ------- | -----------
+q|string|esegue una full text search di utenti
+talent_id|string| ritorna gli utenti con un determinato talent_id, è possibile inserire piu' talent_id separati da virgola
+latitude|string| da utilizzare assieme a longitude e radius. Latitudine, geolocalizza un utente
+longitude|string| da utilizzare assieme a longitude e radius. Longitudine geolocalizza un utente
+radius|integer| da utilizzare assieme a longitude e radius, Diametro di ricerca (km,miles) geolocalizza un utente
+
+### Paginazione e ordinamento della ricerca
+
+Utilizzando i seguenti parametri è possibile cambiare i valori di ordinamento e paginazione dei risultati ritornati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+order|string|Seleziona un ordinamento, i valori possibili sono (default geodist trustmeter avg_rating favorites name created_at)
+direction|string|direzione di ricerca (ASC|DESC)
+page|integer|la pagina richiesta
+per_page|integer|il numero di risultati per pagina
+
+
+
+
+

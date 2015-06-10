@@ -1,0 +1,174 @@
+
+# Registrazione nuovo utente
+
+## Registrare un utente tramite API
+
+```shell
+curl --data "user[email]=example@email.com&user[password]=asdasd&user[password_confirmation]=asdasd&user[im_sixteen]=true&user[terms_of_service]=true&user[locale]=it" https://timerepublik.com/api/v1/registrations
+```
+
+> In caso di successo http status 200
+
+```json
+{
+  "id": 1012,
+  "email": "azaup.a@gmail.com",
+  "username": null,
+  "first_name": null,
+  "last_name": null,
+  "avatar": null,
+  "bio": null,
+  "gender": null,
+  "time_available": 0,
+  "time_earned": 0,
+  "time_spent": 0,
+  "trustmeter": 0,
+  "avg_rating": null,
+  "units": "km",
+  "time_zone": null,
+  "locale": "it",
+  "public_profile": true,
+  "location": {
+    "latitude": null,
+    "longitude": null
+  },
+  "distance": null,
+  "tag_ids": [],
+  "talent_ids": [],
+  "created_at": "2015-05-14T12:13:40.088Z",
+  "updated_at": "2015-05-14T12:13:40.088Z",
+  "role": null,
+  "email_privacy": 0,
+  "cover": null,
+  "gender_privacy": 2,
+  "birthday": null,
+  "birthday_privacy": 2,
+  "phone": null,
+  "phone_privacy": 0,
+  "address": null,
+  "address_privacy": 0,
+  "city": null,
+  "city_privacy": 2,
+  "state": null,
+  "state_privacy": 2,
+  "country": null,
+  "country_privacy": 2,
+  "zip": null,
+  "zip_privacy": 2,
+  "skype": null,
+  "facebook": null,
+  "twitter": null,
+  "linkedin": null,
+  "website": null,
+  "vkontakte": null,
+  "odnoklasniki": null,
+  "tags_count": 0,
+  "requests_count": 0,
+  "offers_count": 0,
+  "deals_count": 0,
+  "awards_count": 0,
+  "referer_count": 0,
+  "favoritings_count": 0,
+  "inverse_favoritings_count": 0,
+  "new_awards": 0,
+  "delta": true,
+  "group": null,
+  "latitude": null,
+  "longitude": null,
+  "tags": [],
+  "talents": [],
+  "favorites": [],
+  "awards": [],
+  "timetrackers": [],
+  "registration_completed_at": null,
+  "attachments": [],
+  "notification_new_message": true,
+  "notification_new_bulletin_post": true,
+  "notification_new_favorite": true,
+  "notification_award_gained": true,
+  "notification_notify_new_friend_user": true,
+  "notification_notify_new_bulletin_post": true,
+  "notification_notify_request_expiration": true,
+  "notification_notify_deal_payment": true,
+  "notification_notify_inactivity_user": true,
+  "notification_instant_pay": true
+}
+```
+
+> in caso di errore http status 422 Unprocessable Entity
+
+```json
+{
+  "errors": {
+    "email": [
+      "Email \u00e8 gi\u00e0 in uso"
+    ],
+    "im_sixteen": [
+      "Per registrarti a TIMEREPUBLIK, devi aver compiuto i 16 anni di et\u00e0"
+    ]
+  },
+  "error_code": 2001,
+  "error_message": "Validation Error"
+}
+```
+
+> Per avere i messaggi di errore in una lingua diversa passare un parametro aggiuntivo locale=CODICE_LOCALE
+
+L'endpoint permette la registrazione di un nuovo utente direttamente tramite API
+
+### HTTP Request
+
+`POST https://timerepublik.com/api/v1/registrations`
+
+
+### Parametri Obbligatori
+
+`
+{
+user:{
+  email: "",
+  password: "",
+  password_confirmation: "",
+  im_sixteen: true,
+  terms_of_service: true,
+  locale: "it"
+  }
+}
+`
+
+
+### Parametri
+
+Parameter | Type | Description
+--------- | ------- | -----------
+user[email] | string | Indirizzo Email dell'utente. Deve essere univoco in Timerepublik
+user[password] | string | Password, almeno 6 caratteri
+user[password_confirmation] | string | Ripetere la password
+user[im_sixteen] | boolean | true se l'utente ha già compiuto 16 anni
+user[terms_of_service] | boolean | confermare che l'utente ha preso visione dei termini di servizio
+user[locale] | string | Codice identificativo della lingua preferita dell'utente. 
+user[referer] | string | (opzionale) indicare il codice referer
+
+<aside class="success">
+Per il solo endpoint di registrazione non è richiesto un access_token.
+</aside>
+
+### Parametri opzionali per registrazione con Facebook/Twitter Token
+
+Per permettere la registrazione anche da App con Facebook/Twitter, questa deve essere implementata lato app e 
+devono essere passati a timerepublik i parametri di accesso validi in fase di registrazione. 
+
+> Registrazione con Twitter/Facebook 
+
+```shell
+curl --data "user[email]=email@gmail.com&user[password]=asdasd&user[password_confirmation]=asdasd&user[im_sixteen]=true&user[terms_of_service]=true&user[locale]=it&user[auth_provider][trusted_token]=25707806-Ke9GVcSHIXoXGSQhQEgMUMIl7Y2bsGrCawdO2vSd0&user[auth_provider][trusted_secret]=aY4mOejomuYSDh3kUOa1agpdzpLtCXqJvrpwAKjYEcA4f&user[auth_provider][uid]=35727806&user[auth_provider][provider]=twitter" https://timerepublik.com/api/v1/registrations
+```
+
+Parameter | Type | Description
+--------- | ------- | -----------
+user[auth_provider][trusted_token] | string | access_token valido per Facebook/Twitter
+user[auth_provider][trusted_secret] | string | solo per twitter, access_secret
+user[auth_provider][uid] | string | l'uid dell'utente su social network
+user[auth_provider][provider] | string | facebook o twitter
+
+Nel caso questi parametri siano presenti verrà validato l'access_token del social network e gli accessi memorizzati assieme all'utente per permettere l'autenticazione con singol sign on Facebook/Twitter.

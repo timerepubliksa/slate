@@ -1,0 +1,101 @@
+
+# Lista di amici Follow/Unfollow utente
+
+Ogni utente di Timerepublik ha la possibilità di seguire un altro utente aggiungendolo alla lista degli utenti "seguiti".
+
+Esistono specifici endpoint per consultare la lista degli utenti 'seguiti' e degli utenti che 'seguono' un determinato utente.
+
+## Endpoint Following
+
+> La chiamata seguente ritorna la lista di utenti che l'utente corrente segue.
+
+```shell
+curl "https://timerepublik.com/api/v1/me/following.json"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+> la lista di persone seguite da l'utente "user1"
+
+```shell
+curl "https://timerepublik.com/api/v1/user1/following.json?fields=id,username"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+> si puo' in ogni caso utilizzare il parametro fields per limitare i campi ritornati
+
+```shell
+curl "https://timerepublik.com/api/v1/me/following.json?fields=id,username"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+Ritorna una lista di utenti seguiti da un determinato utente ( :USER_ID o "me" ) .
+
+`GET: http://timerepublik.com/api/v1/:USER_ID/following.json`
+
+Ricordarsi di sostituire :USER_ID con l'username o l'id dell'utente di cui ci interessa la lista di amici oppure dalla keyword "me" per consultare la lista degli utenti seguiti dall'utente a cui corrisponde l'access_token.
+
+
+## Endpoint Followers
+
+> Utenti che seguono l'utente con ID 1
+
+```shell
+curl "https://timerepublik.com/api/v1/1/followers.json?fields=id" -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+> esempio di risposta
+
+```json
+[
+  { 
+    id: 1011
+  }
+]
+```
+
+L'endpoint Followers serve per ottenere la lista degli utenti che seguono un determinato utente identificato via :USER_ID o :USERNAME
+
+`GET: http://timerepublik.com/api/v1/:USER_ID/followers.json`
+
+
+
+
+## Aggiunta/rimozione di un Followers
+
+
+> Aggiungere un utente con ID 1 alle persone che si seguono
+
+```shell
+curl -data "favorite_id=1" "https://timerepublik.com/api/v1/me/add_favorite.json"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+> Rimuovere l'utente con id 1 dalla lista di persone seguite
+
+```shell
+curl -data "favorite_id=1" "https://timerepublik.com/api/v1/me/remove_favorite.json" \
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+### Aggiungere un utente alla lista degli utenti seguiti
+
+`POST: http://timerepublik.com/api/v1/me/add_favorite.json?favorite_id=:USER_ID`
+
+Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+favorite_id | integer | L'ID utente da aggiungere alle persone che si seguono
+
+### Rimuovere un utente alla lista degli utenti seguiti
+
+`POST: http://timerepublik.com/api/v1/me/remove_favorite.json?favorite_id=:USER_ID`
+
+Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+favorite_id | integer | L'ID utente da rimouovere dalle persone che si seguono
+
+
+
