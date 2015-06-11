@@ -112,6 +112,128 @@ page|integer|la pagina richiesta
 per_page|integer|il numero di risultati per pagina
 
 
+## Trova Richieste
+
+`GET: http://timerepublik.com/api/v1/requests.json`
+
+```shell
+curl "https://timerepublik.com/api/v1/requests?q=sviluppatore&talent_id=2,8&per_page=1&page=1"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+> Esempio Risposta
+
+```json
+
+[
+  {
+    "id": 1072902425,
+    "slug": "asd-das-chiede-un-servizio-di-programmer-ba3ebc02121ec6ef888d1212d16d3428",
+    "title": "Test User chiede un servizio di: Programmer",
+    "message": "Cerco uno sviluppatore ! ",
+    "satisfied": false,
+    "old": false,
+    "archived": false,
+    "locale": "it",
+    "conversations_count": 0,
+    "user_id": 1011,
+    "talent_id": 2,
+    "created_at": "2015-06-11T13:05:44.000+02:00",
+    "expired": false
+  }
+]
+```
+
+### Parametri accettati 
+
+deve essere presente almeno uno dei parametri q,talent_id,latitude
+
+Anche in questo caso, aggiungengo il parametro fields andiamo a modificare la struttura del Json ritornato.
+
+Parameter | Type | Description
+--------- | ------- | -----------
+q|string|esegue una full text search di utenti
+talent_id|string| trova le richieste con un determinato talent_id
+talent_ids|string| array di talent_id separati da virgola
+latitude|string| da utilizzare assieme a longitude e radius. Latitudine, geolocalizza un utente
+longitude|string| da utilizzare assieme a longitude e radius. Longitudine geolocalizza un utente
+radius|integer| da utilizzare assieme a longitude e radius, Diametro di ricerca (km,miles) geolocalizza un utente
+lang|string| filtra le richeiste per codice lingua (it, en, fr ...)
+user_id|integer| filtra le sole richieste di un determinato utente
+
+
+### Paginazione e ordinamento della ricerca
+
+Utilizzando i seguenti parametri è possibile cambiare i valori di ordinamento e paginazione dei risultati ritornati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+order|string|Seleziona un ordinamento, i valori possibili sono (geodist trustmeter avg_rating name created_at)
+direction|string|direzione di ricerca (ASC|DESC)
+page|integer|la pagina richiesta
+per_page|integer|il numero di risultati per pagina
+
+
+
+## Trova Offerte
+
+`GET: http://timerepublik.com/api/v1/offerts.json`
+
+```shell
+curl "https://timerepublik.com/api/v1/offers?q=sviluppatore&talent_id=2,8&per_page=1&page=1"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+> Esempio Risposta
+
+```json
+
+[
+  {
+    "id": 1072902422,
+    "slug": "asd-das-offre-un-servizio-di-programmer-ba3ebc02121ec6ef888d1212d16d3428",
+    "title": "Test User offre un servizio di: Programmer",
+    "message": "Sono uno sviluppatore ! ",
+    "satisfied": false,
+    "old": false,
+    "archived": false,
+    "locale": "it",
+    "conversations_count": 0,
+    "user_id": 1011,
+    "talent_id": 2,
+    "created_at": "2015-06-11T13:05:44.000+02:00",
+    "expired": false
+  }
+]
+```
+
+### Parametri accettati 
+
+deve essere presente almeno uno dei parametri q,talent_id,latitude
+
+Anche in questo caso, aggiungengo il parametro fields andiamo a modificare la struttura del Json ritornato.
+
+Parameter | Type | Description
+--------- | ------- | -----------
+q|string|esegue una full text search di utenti
+talent_id|string| trova le offerte con un determinato talent_id
+talent_ids|string| array di talent_id separati da virgola
+latitude|string| da utilizzare assieme a longitude e radius. Latitudine, geolocalizza un utente
+longitude|string| da utilizzare assieme a longitude e radius. Longitudine geolocalizza un utente
+radius|integer| da utilizzare assieme a longitude e radius, Diametro di ricerca (km,miles) geolocalizza un utente
+lang|string| filtra le richeiste per codice lingua (it, en, fr ...)
+user_id|integer| filtra le sole offerte di un determinato utente
+
+### Paginazione e ordinamento della ricerca
+
+Utilizzando i seguenti parametri è possibile cambiare i valori di ordinamento e paginazione dei risultati ritornati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+order|string|Seleziona un ordinamento, i valori possibili sono (geodist trustmeter avg_rating name created_at)
+direction|string|direzione di ricerca (ASC|DESC)
+page|integer|la pagina richiesta
+per_page|integer|il numero di risultati per pagina
 
 
 
