@@ -124,10 +124,10 @@ Timerepublik consente anche l'accesso tramite single sign on di facebook e twitt
 
 
 ```shell
-curl --data 'client_id=YOUR_CLIENT_ID&grant_type=password&username=USER_EMAIL&password=USER_PASSWORD' https://timerepublik.com/oauth/token
+curl --data 'client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_CLIENT_ID&grant_type=password&username=USER_EMAIL&password=USER_PASSWORD' https://timerepublik.com/oauth/token
 ```
 
-> assicurati di impostare `YOUR_CLIENT_ID` `USER_EMAIL` e `USER_PASSWORD` con i parametri corretti.
+> assicurati di impostare `YOUR_CLIENT_SECRET` `YOUR_CLIENT_ID` `USER_EMAIL` e `USER_PASSWORD` con i parametri corretti.
 
 > In risposta il server ritornerà l'access_token da utilizzare nelle chiamate successive.
 
@@ -162,15 +162,20 @@ Parametri | Descrizione
 grant_type | impostare a 'password'
 username | email dell'utente
 password | la password dell'utente
+client_id | client_id fornito da timerepublik
+client_secret | client_secret fornito da timerepublik
 
-<aside class="notice">
-NOTE: Pasword Credential Grant non neccessita di client_id e client_secret
-</aside>
 
-In risposta otterrete qualcosa di simile a 
+In risposta otterrete un json simile a questo
 
 `json
-{"access_token":"fa591d5b92be3ba7bc5c2c10be938901aa2c5c932cf9f312e5e2660d235dbe46","token_type":"bearer","expires_in":604800,"scope":"public","created_at":1431526714}
+{
+  "access_token": "fa591d5b92be3ba7bc5c2c10be938901aa2c5c932cf9f312e5e2660d235dbe46",
+  "token_type": "bearer",
+  "expires_in": 604800,
+  "scope": "public",
+  "created_at": 1431526714
+}
 `
 
 Risposta | Descrizione
@@ -188,13 +193,13 @@ TimeRepublik.
 > Password Credential grant per facebook
 
 ```shell
-curl --data 'grant_type=password&username=1123961800&trusted_token=CACoHZC3D1e4BAMJ2QhR8XZBe44glLLTBN7KuZBFH4I2ZB3w60tJWjoLgp3ZAasXNVkQzZABI158GaBcGsTx5cvx1ZA5a0yiwUZCKK78ZAZAj05wSenwgHkrvpbgUZCYs8vNfvpPfgcO64sb7QZBDNIrUJEx5f4q6ec3mvNQa6SsQ4ZAp6s1vlowMgiUM7ZBJUmir1ZAVYZD&provider=facebook' 'https://timerepublik.com/oauth/token'
+curl --data 'client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_CLIENT_ID&grant_type=password&username=1123961800&trusted_token=CACoHZC3D1e4BAMJ2QhR8XZBe44glLLTBN7KuZBFH4I2ZB3w60tJWjoLgp3ZAasXNVkQzZABI158GaBcGsTx5cvx1ZA5a0yiwUZCKK78ZAZAj05wSenwgHkrvpbgUZCYs8vNfvpPfgcO64sb7QZBDNIrUJEx5f4q6ec3mvNQa6SsQ4ZAp6s1vlowMgiUM7ZBJUmir1ZAVYZD&provider=facebook' 'https://timerepublik.com/oauth/token'
 ```
 
 > Password credential grant per Twitter
 
 ```shell
-curl --data 'grant_type=password&username=35727806&trusted_token=35707806-Ke9GVcSHIXoXGSQhQEgMUMIl7Y2bsGrCawdO2vSd0&trusted_secret=lY4mOe2omuYSDh3kUOa1agpdzpLtCXqJvrpwAKjYEcA4f&provider=twitter' 'https://timerepublik.com/oauth/token'
+curl --data 'client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_CLIENT_ID&grant_type=password&username=35727806&trusted_token=35707806-Ke9GVcSHIXoXGSQhQEgMUMIl7Y2bsGrCawdO2vSd0&trusted_secret=lY4mOe2omuYSDh3kUOa1agpdzpLtCXqJvrpwAKjYEcA4f&provider=twitter' 'https://timerepublik.com/oauth/token'
 ```
 
 Endpoint: 
@@ -210,6 +215,8 @@ username | L'object ID Facebook/Twitter corrispondente all'utente
 trusted_token | access_token ottenuto da Facebook/twitter
 trusted_secret | impostare con l'access_secret (solo per twitter)
 provider | impostare a 'facebook' o 'twitter' a seconda della provenienza del token
+client_id | client_id fornito da timerepublik
+client_secret | client_secret fornito da timerepublik
 
 Timerepublik verificherà la validità del Token di autenticazione e genererà a sua volta un access_token per l'utente 
 che deve essersi registrato almento una volta utilizzando il proprio profilo social a TimeRepublik.

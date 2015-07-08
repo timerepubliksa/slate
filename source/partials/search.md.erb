@@ -1,10 +1,51 @@
 # Search
 
-La funzionalità di ricerca delle api vi mpermette di ricercare Utenti, Richieste Offerte e Messaggi di Timerepublik in un endpoint unificato. 
+La funzionalità di ricerca delle api vi mpermette di ricercare Utenti, Richieste e Messaggi di Timerepublik in un endpoint unificato. 
 
 ## Ricerca Globale
 
-> La ricerca viene effettuata su tutti gli attributi testuali di Utenti, Richieste e Offerte.
+
+```shell
+curl "https://timerepublik.com/api/v1/search.json?q=Taryn"
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+> Esempio Risposta
+
+```json
+{
+  "users": [
+    {
+      "id": 1003,
+      "email": "private",
+      "username": "user_3",
+      "first_name": "Taryn",
+      "last_name": "Nitzsche",
+      "trustmeter": 61
+    }
+  ],
+  "requests": [
+    {
+      "id": 3184961,
+      "slug": "request_21",
+      "title": "Taryn Nitzsche chiede un servizio di: Computer Helper",
+      "message": "Nihil inventore aut sit aut doloribus. Quasi laboriosam corporis maxime debitis modi ab et. Sed ratione quod perspiciatis unde laborum fugit odio. Possimus ut itaque blanditiis voluptate dignissimos. Eos quo non reiciendis consequuntur.",
+      "satisfied": false,
+      "old": false,
+      "archived": false,
+      "locale": "de",
+      "conversations_count": 0,
+      "user_id": 1003,
+      "talent_id": 1,
+      "created_at": "2015-06-30T15:25:38.000Z"
+    }
+  ]
+}
+```
+
+
+
+> La ricerca viene effettuata su tutti gli attributi testuali di Utenti, Richieste.
 
 > Chiamata di esempio, vengono ritornati tutti i risultati contenenti il termine 'web'
 
@@ -19,17 +60,18 @@ curl "https://timerepublik.com/api/v1/search.json?q=web"
 
 Parameter | Type | Description
 --------- | ------- | -----------
-q|string|esegue una full text search di utenti richieste ed offerte
+q|string|esegue una full text search di utenti e richieste.
 
 Non è prevista paginazione e il limite della cardinalità dei risultati è settato da timerepublik.
 
-Veine ritornato un JSON con la seguente struttura
+Viene ritornato un JSON con la seguente struttura
 
 {
   users: [ ],
-  requests: [ ],
-  offers: [ ]
+  requests: [ ]
 }
+
+
 
 ## Ricerca Utenti
 
@@ -174,8 +216,8 @@ page|integer|la pagina richiesta
 per_page|integer|il numero di risultati per pagina
 
 
-
-## Trova Offerte
+<%if false%>
+<!-- ## Trova Offerte
 
 `GET: http://timerepublik.com/api/v1/offerts.json`
 
@@ -205,8 +247,8 @@ curl "https://timerepublik.com/api/v1/offers?q=sviluppatore&talent_id=2,8&per_pa
     "expired": false
   }
 ]
-```
-
+``` -->s
+<!-- 
 ### Parametri accettati 
 
 deve essere presente almeno uno dei parametri q,talent_id,latitude
@@ -237,3 +279,4 @@ per_page|integer|il numero di risultati per pagina
 
 
 
+ --><%end%>
