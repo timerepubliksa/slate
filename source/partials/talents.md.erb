@@ -1,0 +1,74 @@
+# Talenti
+
+I Talenti sono dei Tag che un utente puo' collegare al proprio profilo per definire le proprie abilità.
+I Talenti sono raggruppati in Categorie su 2 livelli.
+
+## Categorizzazione Talenti
+
+```shell```
+  curl "http://localhost:3000/api/v1/talent_categories.json?q\[children_of\]=1"
+```
+
+```json```
+[
+  {
+    "id": 2,
+    "name": "Computers & WWW",
+    "description": null,
+    "position": 0.0,
+    "parent_id": 1,
+    "depth": 0,
+    "icon": null,
+    "talent_ids": [
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Electronics & Digitals",
+    "description": null,
+    "position": 0.0,
+    "parent_id": 1,
+    "depth": 0,
+    "icon": null,
+    "talent_ids": []
+  }
+]
+```
+
+
+L'endpoint permette di ottenere la lista di tutte le categorie di talento disponibili. 
+
+Le categorie sono organizzate ad albero, la struttura è definita dagli attributi parent_id (id del nodeo padre) e depth (profondità nell'albero)
+
+`GET https://timerepublik.com/api/v1/talents_categories.json`
+
+Per l'endpoint talent_categories non è necessario il token di autenticazione
+
+### Parametri opzionali di ricerca
+
+Parameter | Type | Description
+--------- | ------- | -----------
+q[before_depth]|integer|(depth)  Ritorna tutte le categorie con profondità minore del valore del parametro indicato (node.q[depth < depth)
+q[to_depth]|integer|(depth)      Ritorna tutte le categorie con profondità minore o uguale del valore del parametro (node.q[depth <= depth)
+q[at_depth]|integer|(depth)      Ritorna le categorie esattamente alla profondita' indicata (node.depth == depth)
+q[from_depth]|integer|(depth)    Ritorna le categorie con profondità maggiore o uguale del parametro (node.depth >= depth)
+q[after_depth]|integer|(depth)   Ritorna le categorie con profondità maggiore del parametro indicato (node.depth > depth)
+q[ancestors_of]|integer|(node)   Ritorna tutti gli antenati della categoria con ID in parametro
+q[children_of]|integer|(node)    Ritorna tutti i figli della categoria con ID in parametro
+
+### Attributi delle categorie
+
+Parameter | Type | Description
+--------- | ------- | -----------
+id|integer|ID della categoria
+name|string| Nome della categoria
+description|text| Breve descrizione della categoria
+position|integer| Ordine con il cuale visualizzare la categoria
+parent_id|integer| ID della categoria padre
+depth|integer| Profondità nell'albero delle categorie (root=0)
+icon|Json| Immagine Icona della categoria
+talent_ids|Array| un array di ID di talento ragruppati in questa categoria
+
