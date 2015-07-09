@@ -1,0 +1,250 @@
+# Progetti / Richieste di aiuto
+
+Un utente puo' creare e cercare richieste. 
+La richiesta permette lo scambio di talenti e tempo.
+
+## Lista delle richieste
+
+
+Per la ricerca di richieste consultare la sezione nella guida "Ricerca Richieste"
+Non è possibile ottenere la lista di tutte le richieste inserite su Timerepublik
+ma è sempre necessario eseguire una ricerca parametrizzata.
+
+`GET: https://timerepublik.com/api/v1/requests.json`
+
+## Lista delle richieste di un determinato utente
+
+> Lista di richieste create dell'utente corrente
+
+```shell```
+curl https://timerepublik.com/api/v1/me/requests.json \
+  -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
+```
+
+> Esempio di risposta
+
+```json```
+[
+  {
+    "id": 1072902424,
+    "slug": "andrea-zaupa-chiede-un-servizio-di-computer-helper-a1ab5d93b55fb486b13102e0f9400bc8",
+    "title": "Andrea Zaupa chiede un servizio di: Computer Helper",
+    "message": "test",
+    "satisfied": false,
+    "old": false,
+    "archived": false,
+    "locale": "en",
+    "conversations_count": 0,
+    "user_id": 1010,
+    "talent_id": 1,
+    "created_at": "2015-07-08T12:26:46.000Z",
+    "expired": false
+  }
+]
+```
+
+
+`GET: https://timerepublik.com/api/v1/:USER_ID/requests.json`
+
+Oppure per la lista delle ricehiste create dall'utente corrente
+
+`GET: https://timerepublik.com/api/v1/me/requests.json`
+
+### Paginazione e ordinamento della ricerca
+
+Utilizzando i seguenti parametri è possibile cambiare i valori di ordinamento e paginazione dei risultati ritornati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+order|string|Seleziona un ordinamento, i valori possibili sono (geodist trustmeter avg_rating name created_at)
+direction|string|direzione di ricerca (ASC|DESC)
+page|integer|la pagina richiesta
+per_page|integer|il numero di risultati per pagina
+
+
+## Dettaglio Richiesta
+
+> Dettaglio richiesta con id 1
+
+```shell```
+  curl "https://timerepublik.com/api/v1/requests/1.json"
+```
+
+> risposta
+
+```json```
+{
+  "id": 1072902424,
+  "slug": "andrea-zaupa-chiede-un-servizio-di-computer-helper-a1ab5d93b55fb486b13102e0f9400bc8",
+  "title": "Andrea Zaupa chiede un servizio di: Computer Helper",
+  "message": "hhhhhh",
+  "satisfied": false,
+  "old": false,
+  "archived": false,
+  "locale": "en",
+  "conversations_count": 0,
+  "user_id": 1010,
+  "talent_id": 1,
+  "created_at": "2015-07-08T12:26:46.000Z",
+  "talent": {
+    "id": 1,
+    "name": "Computer Helper",
+    "position": 0.0,
+    "slug": null,
+    "icon": null,
+    "tags_count": 1,
+    "talent_category_id": 2,
+    "disabled": false,
+    "created_at": "2015-06-30T15:25:38.000Z",
+    "updated_at": "2015-06-30T15:25:38.000Z"
+  },
+  "user": {
+    "id": 1010,
+    "email": "'test@test.com'",
+    "username": "andreazaupa",
+    "first_name": "Andrea",
+    "last_name": "Zaupa",
+    "trustmeter": 1
+  },
+  "attachments": [],
+  "updated_at": "2015-07-08T12:26:46.000Z"
+}
+```
+
+`GET: https://timerepublik.com/api/v1/requests/:ID_RICHIESTA.json`
+
+Ritorna il dettaglio della richiesta identificata da :ID_RICHIESTA
+
+### Attributi delle richiesta
+
+Parameter | Type | Description
+--------- | ------- | -----------
+id|integer|ID della richiesta
+slug|string| SLUG/URL della richiesta
+title|string| Titolo della richiesta
+message|text| Breve descrizione della richiesta
+satisfied|boolean| Indica se la richiesta è stata soddisfatta
+locale|string| Codice lingua della richiesta
+archived|boolean| Indica se la richiesta è stata archiviata
+conversations_count|integer| Numero di conversazioni collegate alla richiesta
+user_id|integer| Identificativo utente che ha creato la richiesta
+talent_id|integer| Identificativo talento collegato alla richiesta
+created_at|datetime| Data e oriario di creazione della richiesta
+attachments|json|Eventuali file allegati alla richiesta
+
+
+## Creazione nuova Richiesta
+
+> Esempio di creazione di una richiesta
+
+```shell```
+curl -H "Authorization: Bearer 3c11bb8c4c78180bba0f3c86984ff2e6b8a6c3cbdf5e1c125a26e196d19e115b" --data "request[talent_id]=1&request[message]='testo richiesta'" https://timerepublik.com/api/v1/requests.json
+```
+
+```json```
+{
+  "id": 1072902426,
+  "slug": "andrea-zaupa-chiede-un-servizio-di-computer-helper-6b02e60ef9b106ebf358a4ccf7d872fa",
+  "title": "Andrea Zaupa chiede un servizio di: Computer Helper",
+  "message": "'testo richiesta'",
+  "satisfied": false,
+  "old": false,
+  "archived": false,
+  "locale": "en",
+  "conversations_count": 0,
+  "user_id": 1010,
+  "talent_id": 1,
+  "created_at": "2015-07-09T08:09:43.139Z",
+  "expired": false
+}
+```
+
+Endpoint per la creazione di una richiesta dall'utente corrente
+
+`POST: https://timerepublik.com/api/v1/requests.json`
+
+### Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+request[message]|text| Breve descrizione della richiesta
+request[talent_id]|integer| Identification Talento da assegnare alla richiesta
+request[attachment_attributes][][file]|file| Il file da allegare alla richiesta (Form Multipart)
+
+
+
+## Modifica una Richiesta
+
+> Esempio di modifica di una richiesta
+
+```shell```
+curl -H "Authorization: Bearer 3c11bb8c4c78180bba0f3c86984ff2e6b8a6c3cbdf5e1c125a26e196d19e115b" -X PUT -d "request[message]"="Testo modificato" https://timerepublik.com/api/v1/requests/1072902426.json
+```
+
+```json```
+{
+  "id": 1072902426,
+  "slug": "andrea-zaupa-chiede-un-servizio-di-computer-helper-6b02e60ef9b106ebf358a4ccf7d872fa",
+  "title": "Andrea Zaupa chiede un servizio di: Computer Helper",
+  "message": "Testo modificato",
+  "satisfied": false,
+  "old": false,
+  "archived": false,
+  "locale": "en",
+  "conversations_count": 0,
+  "user_id": 1010,
+  "talent_id": 1,
+  "created_at": "2015-07-09T08:09:43.139Z",
+  "expired": false
+}
+```
+
+Endpoint per la modifica di una richiesta dell'utente corrente
+
+`PUT: https://timerepublik.com/api/v1/requests/:REQUEST_ID.json`
+
+### Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+request[message]|text| Breve descrizione della richiesta
+request[talent_id]|integer| Identification Talento da assegnare alla richiesta
+request[attachment_attributes][][file]|file| Il file da allegare alla richiesta (Form Multipart)
+request[satisfied]|boolean| Indica che la richiesta è stata soddisfatta 
+
+## Rinnovare una richiesta
+
+> Esempio di rinnovo di  una richiesta
+
+```shell```
+curl -H "Authorization: Bearer 3c11bb8c4c78180bba0f3c86984ff2e6b8a6c3cbdf5e1c125a26e196d19e115b" -X POST https://timerepublik.com/api/v1/requests/1072902426/renew.json
+```
+
+Rinnovare una richiesta che non sia già stata soddisfatta permette che questa venga evidenziata meglio all'interno di Timerepublik. 
+
+`POST: https://timerepublik.com/api/v1/requests/:REQUEST_ID/renew.json`
+
+
+## Eliminare una richiesta
+
+> Esempio di cancellazione di  una richiesta
+
+```shell```
+curl -H "Authorization: Bearer 3c11bb8c4c78180bba0f3c86984ff2e6b8a6c3cbdf5e1c125a26e196d19e115b" -X DELETE https://timerepublik.com/api/v1/requests/1072902426.json
+```
+
+Eliminare una richiesta 
+
+`DELETE: https://timerepublik.com/api/v1/requests/:REQUEST_ID.json`
+
+In caso di successo HTTP 200 OK
+
+
+
+
+
+
+
+
+
+

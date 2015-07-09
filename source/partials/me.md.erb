@@ -8,7 +8,7 @@ Grazie a questo endpoint è possibile ottenere ed aggiornare le informazioni leg
 
 
 ```shell
-curl "https://timerepublik.com/api/v1/me.json"
+curl "https://timerepublik.com/api/v1/me.json" \
   -H "Authorization: Bearer 4256dde1cce5957d2d6be4b4f4dcee1656ec2990522eab52a8491e2130f29ea7"
 ```
 
@@ -396,6 +396,38 @@ Non è necessario inviare tutti i campi ad ogni richiesta di update.
 
 <aside class="warning"> La registrazione viene considerata completa se è possibile geolocalizzare l'indirizzo del utente, se sono presenti email, nome, cognome e se è stato collegato almento 1 talento. <br> Fintanto che la registrazione non è completa l'accesso alle api è limitato. </aside>
 
+### Tag
+
+> Esempio di chiamata per modificare la lista degli attributi di uno specifico tag con id 970513585
+
+```shell```
+
+curl --data "user[tags_attributes][id]=970513585&user[tags_attributes][list]="fun,list"&user[birthday]=201-01983-01-20&user[gender_privacy]=0&user[email]='test@test.com'" -H "Authorization: Bearer 3c11bb8c4c78180bba0f3c86984ff2e6b8a6c3cbdf5e1c125a26e196d19e115b" https://timerepublik.com/api/v1/me.json
+
+```
+
+> Oppure, se si desiderano modificare piu' tags
+
+```shell```
+
+curl --data "user[tags_attributes][0][id]=970513585&user[tags_attributes][0][list]='fun,list'&user[tags_attributes][1][id]=270513585&user[tags_attributes][1][list]='other,tag' -H "Authorization: Bearer 3c11bb8c4c78180bba0f3c86984ff2e6b8a6c3cbdf5e1c125a26e196d19e115b" https://timerepublik.com/api/v1/me.json
+
+```
+
+
+Un Tag lega l'utente ad un determinato talento, i tag personalizzano la descrizione del Talento collegato ad uno specifico utente. 
+
+La creazine dei Tag avviene in automatico quando si collega un talento ad un utente tramite il parameto talent_ids, per aggiornare la lista di attributi di uno specifico tag occorre d'apprima ottenere l'id del tag e in seguito eseguire una chiamata di aggiornamento del profilo utente passando anche il parametro user[tags_attributes][id] e almeno uno dei seguenti attributi.
+
+
+Parameter | Type | Description
+--------- | ------- | -----------
+user[tags_attributes][id]|integer| l'id del tag da modificare
+user[tags_attributes][active]|boolean| un tag puo' essere disattivato
+user[tags_attributes][list]|string| la lista separata da virgola dei tag da assegnare all' utente/talento
+user[tags_attributes][position]|integer| indica la cardinalità di visualizzazione del tag ( >=0 )
+<%if false%> user[tags_attributes][_destroy]|boolean| se viene passato il parametro con un valore true (1), il tag e 
+<%end%>
 
 ### Risposta
 
