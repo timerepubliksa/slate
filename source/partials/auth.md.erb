@@ -33,11 +33,10 @@ Per ottenere il token di autorizzazione dovete eseguire un redirect o far seguir
 > Richiesta di autenticazione Oauth
 
 ```shell
-open https://timerepublik.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code
+open https://timerepublik.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope="public write"
 ```
 
-
-GET: `https://timerepublik.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code`
+GET: `https://timerepublik.com/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=public write`
 
 
 sostituendo con i parametri corretti YOUR_CLIENT_ID e YOUR_REDIRECT_URI.
@@ -57,7 +56,7 @@ L'authorization_code puo' essere scambiato con un access token tramite una chiam
 > Esempio di richiesta access_token
 
 ```shell
-curl --data 'client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=authorization_code&redirect_uri=YOUR_REDIRECT_URI&code=RETURNED_AUTHORIZATION_CODE' \
+curl --data 'client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&scope=public write&grant_type=authorization_code&redirect_uri=YOUR_REDIRECT_URI&code=RETURNED_AUTHORIZATION_CODE' \
 'https://timerepublik.com/oauth/token'
 ```
 
@@ -65,11 +64,12 @@ curl --data 'client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_typ
 
 ```json
 {
-  "access_token":"fa591d5b92be3ba7bc5c2c10be938901aa2c5c932cf9f312e5e2660d235dbe46",
-  "token_type":"bearer",
-  "expires_in":604800,
-  "scope":"public",
-  "created_at":1431526714
+  "access_token": "0d975644dd0eebd4e3373534af0fcaaa88e3233067ecffb764269e90f03476b6",
+  "token_type": "bearer",
+  "expires_in": 604800,
+  "refresh_token": "898bfe5e0a6b1060c85e26e05791475777b89100c4ddd40804a3f11a0cd94aa7",
+  "scope": "public",
+  "created_at": 1437039500
 }
 ```
 
@@ -94,16 +94,18 @@ client_secret | Il vostro CLIENT_SECRET
 code | l'authorization code ritornato dalla procedura precedente
 grant_type | Impostare a 'authorization_code'
 redirect_uri | Il parametro YOUR_REDIRECT_URI utilizzato in precedenza
+scope| lo scope public da i permessi in sola lettura, mentre 'public write' consente la lettura e scrittura
 
 In risposta otterrete qualcosa di simile a 
 
 `json
 {
-  "access_token": "fa591d5b92be3ba7bc5c2c10be938901aa2c5c932cf9f312e5e2660d235dbe46",
+  "access_token": "0d975644dd0eebd4e3373534af0fcaaa88e3233067ecffb764269e90f03476b6",
   "token_type": "bearer",
   "expires_in": 604800,
+  "refresh_token": "898bfe5e0a6b1060c85e26e05791475777b89100c4ddd40804a3f11a0cd94aa7",
   "scope": "public",
-  "created_at": 1431526714
+  "created_at": 1437039500
 }
 `
 
@@ -112,6 +114,8 @@ Risposta | Descrizione
 access_token | L'access token generato per l'utente che si è autenticato.
 expires_in | Il tempo di validità del token in secondi a partire da created_at
 created_at | L'effettiva data di creazione del token
+scope | I permessi associati al token
+refresh_token | E' necessario per rinnovare un token che sta per scadere 
 
 
 ## Resource Owner Password Credentials Grant
@@ -124,7 +128,7 @@ Timerepublik consente anche l'accesso tramite single sign on di facebook e twitt
 
 
 ```shell
-curl --data 'client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_CLIENT_ID&grant_type=password&username=USER_EMAIL&password=USER_PASSWORD' https://timerepublik.com/oauth/token
+curl --data 'client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_CLIENT_ID&grant_type=password&username=USER_EMAIL&password=USER_PASSWORD&scope=public write' https://timerepublik.com/oauth/token
 ```
 
 > assicurati di impostare `YOUR_CLIENT_SECRET` `YOUR_CLIENT_ID` `USER_EMAIL` e `USER_PASSWORD` con i parametri corretti.
@@ -133,11 +137,12 @@ curl --data 'client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_CLIENT_ID&grant_typ
 
 ```json
 {
-  "access_token": "ffeb8b661600ee464eb82592dd143810638da818a5cdb292f2c0e493141ae963",
+  "access_token": "0d975644dd0eebd4e3373534af0fcaaa88e3233067ecffb764269e90f03476b6",
   "token_type": "bearer",
   "expires_in": 604800,
+  "refresh_token": "898bfe5e0a6b1060c85e26e05791475777b89100c4ddd40804a3f11a0cd94aa7",
   "scope": "public",
-  "created_at": 1431100101
+  "created_at": 1437039500
 }
 ```
 
@@ -164,17 +169,19 @@ username | email dell'utente
 password | la password dell'utente
 client_id | client_id fornito da timerepublik
 client_secret | client_secret fornito da timerepublik
+scope | 'public' o 'public write'
 
 
 In risposta otterrete un json simile a questo
 
 `json
 {
-  "access_token": "fa591d5b92be3ba7bc5c2c10be938901aa2c5c932cf9f312e5e2660d235dbe46",
+  "access_token": "0d975644dd0eebd4e3373534af0fcaaa88e3233067ecffb764269e90f03476b6",
   "token_type": "bearer",
   "expires_in": 604800,
+  "refresh_token": "898bfe5e0a6b1060c85e26e05791475777b89100c4ddd40804a3f11a0cd94aa7",
   "scope": "public",
-  "created_at": 1431526714
+  "created_at": 1437039500
 }
 `
 
@@ -183,6 +190,8 @@ Risposta | Descrizione
 access_token | L'access token generato per l'utente che si è autenticato.
 expires_in | Il tempo di validità del token in secondi a partire da created_at
 created_at | L'effettiva data di creazione del token
+scope | 'public' o 'public write'
+refresh_token| deve essere memorizzato e puo' essere utilizzato per rinnovare un access_token in scadenza
 
 
 ### Password credential grant Facebook/Twitter
@@ -193,13 +202,13 @@ TimeRepublik.
 > Password Credential grant per facebook
 
 ```shell
-curl --data 'client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_CLIENT_ID&grant_type=password&username=1123961800&trusted_token=CACoHZC3D1e4BAMJ2QhR8XZBe44glLLTBN7KuZBFH4I2ZB3w60tJWjoLgp3ZAasXNVkQzZABI158GaBcGsTx5cvx1ZA5a0yiwUZCKK78ZAZAj05wSenwgHkrvpbgUZCYs8vNfvpPfgcO64sb7QZBDNIrUJEx5f4q6ec3mvNQa6SsQ4ZAp6s1vlowMgiUM7ZBJUmir1ZAVYZD&provider=facebook' 'https://timerepublik.com/oauth/token'
+curl --data 'client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_CLIENT_ID&grant_type=password&username=1123961800&trusted_token=CACoHZC3D1e4BAMJ2QhR8XZBe44glLLTBN7KuZBFH4I2ZB3w60tJWjoLgp3ZAasXNVkQzZABI158GaBcGsTx5cvx1ZA5a0yiwUZCKK78ZAZAj05wSenwgHkrvpbgUZCYs8vNfvpPfgcO64sb7QZBDNIrUJEx5f4q6ec3mvNQa6SsQ4ZAp6s1vlowMgiUM7ZBJUmir1ZAVYZD&scope=public write&provider=facebook' 'https://timerepublik.com/oauth/token'
 ```
 
 > Password credential grant per Twitter
 
 ```shell
-curl --data 'client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_CLIENT_ID&grant_type=password&username=35727806&trusted_token=35707806-Ke9GVcSHIXoXGSQhQEgMUMIl7Y2bsGrCawdO2vSd0&trusted_secret=lY4mOe2omuYSDh3kUOa1agpdzpLtCXqJvrpwAKjYEcA4f&provider=twitter' 'https://timerepublik.com/oauth/token'
+curl --data 'client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_CLIENT_ID&grant_type=password&username=35727806&trusted_token=35707806-Ke9GVcSHIXoXGSQhQEgMUMIl7Y2bsGrCawdO2vSd0&trusted_secret=lY4mOe2omuYSDh3kUOa1agpdzpLtCXqJvrpwAKjYEcA4f&provider=twitter&scope=public write' 'https://timerepublik.com/oauth/token'
 ```
 
 Endpoint: 
@@ -217,8 +226,109 @@ trusted_secret | impostare con l'access_secret (solo per twitter)
 provider | impostare a 'facebook' o 'twitter' a seconda della provenienza del token
 client_id | client_id fornito da timerepublik
 client_secret | client_secret fornito da timerepublik
+scope | 'public' o 'public write' rispettivamente per lettura o lettura/scrittura
 
 Timerepublik verificherà la validità del Token di autenticazione e genererà a sua volta un access_token per l'utente 
 che deve essersi registrato almento una volta utilizzando il proprio profilo social a TimeRepublik.
 
+
+## Informazioni Token di accesso
+
+> Esempio di richiesta informazioni di un access_token
+
+```shell```
+curl https://timerepublik.com/oauth/token/info -H "Authorization: Bearer ca25557ffa5daf9bb65c7b410217197e12b89a9d5dcf2f8d06089181610730e1"
+```
+
+```json```
+{
+  "resource_owner_id": 1010,
+  "scopes": [
+    "public",
+    "write"
+  ],
+  "expires_in_seconds": 604488,
+  "application": {
+    "uid": "a23c77eeac03c36b52d3c0351ea1851b6271d7d74c628220a43a2a50598abdc3"
+  },
+  "created_at": 1437038842
+}
+```
+
+Endpoint che permette di ottenere informazioni legate ad un access_token valido.
+
+`GET: https://timerepublik.com/oauth/token/info`
+
+Non sono previsti parametri opzionali
+
+Un access_token valido và incluso nell'header della richeista.
+
+## Rinnovare un Token di accesso
+
+> Esempio di rinnovo di un access_token
+
+```shell```
+curl -F grant_type=refresh_token \
+-F client_id=a23c77eeac03c36b52d3c0351ea1851b6271d7d74c628220a43a2a50598abdc3 \
+-F client_secret=bef3fc629c15f3aa4a8102d839d1a73de70dec442251d0be6c9e8205814cd32b \
+-F refresh_token=898bfe5e0a6b1060c85e26e05791475777b89100c4ddd40804a3f11a0cd94aa7 \
+-X POST https://timerepublik.com/oauth/token
+```
+
+```json```
+{
+  "access_token": "97a6afcc46db4ae8ddd1ed52b94a2f3f303096253a0834740b2593d3c084171f",
+  "token_type": "bearer",
+  "expires_in": 604800,
+  "refresh_token": "c505116f944db87b7a52868d234e357582af93ba6ac1714aafc1217a9f303897",
+  "scope": "public",
+  "created_at": 1437039891
+}
+```
+
+Endpoint che permette di rinnovare un access_token utilizzando il refresh_token fornito dal server.
+
+`POST: https://timerepublik.com/oauth/token`
+
+i parametri da utilizzare sono 
+
+Parametri | Descrizione
+--------- | -----------
+grant_type | impostare a 'refresh_token'
+refresh_token | Il refresh_token ottenuto in precedenza
+client_id | client_id fornito da timerepublik
+client_secret | client_secret fornito da timerepublik
+scope | 'public' o 'public write'
+
+Il Token precedente è comunque valido fino alla scadenza impostata.
+
+Il refresh_token puo' essere utilizzato soltanto una volta.
+
+## Revocare un Token di accesso 
+
+> Esempio di revoca di un access_token
+
+```shell```
+curl -F token=97a6afcc46db4ae8ddd1ed52b94a2f3f303096253a0834740b2593d3c084171f \
+ -H "Authorization: Bearer 97a6afcc46db4ae8ddd1ed52b94a2f3f303096253a0834740b2593d3c084171f" \
+ -X POST https://timerepublik.com/oauth/revoke
+```
+
+```json```
+{
+}
+```
+
+Endpoint che permette di revocare un access_token.
+
+`POST: https://timerepublik.com/oauth/revoke`
+
+i parametri da utilizzare sono 
+
+Parametri | Descrizione
+--------- | -----------
+token | il token da revocare
+
+
+Anche il refresh_token rilasciato assieme al token di accesso viene revocato.
  

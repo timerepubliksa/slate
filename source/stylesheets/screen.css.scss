@@ -371,9 +371,9 @@ html, body {
     margin-bottom: $h1-margin-bottom;
     margin-top: 2em;
     border-top: 1px solid #ddd;
-    @include background-image(
-      linear-gradient(top, #fff, #f9f9f9)
-    );
+    // @include background-image(
+    //   linear-gradient(top, #fff, #f9f9f9)
+    // );
   }
 
   h1:first-child, div:first-child + h1 {
@@ -630,4 +630,12 @@ html, body {
   %right-col + %left-col {
     margin-top: $main-padding;
   }
+}
+
+.tocify-wrapper .tocify-subheader .tocify-item > a{
+  color: #1f1f1f;
+}
+
+.lang-selector{
+  background: #11d194
 }

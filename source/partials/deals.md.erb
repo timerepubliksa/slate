@@ -1,0 +1,101 @@
+# Scambiare Tempo
+
+Tramite le api è possibile trasferire il tempo disponibile da un utente ad un altro. 
+
+Gli scambi di tempo devono essere collegati ad una conversazione ed opzionalmente ad una richiesta.
+
+Unica eccezzione sono gli scambi di tempo effettuati tramite InstaPay.
+
+## Trasferire del tempo ad un altro utente
+
+> Esempio di creazione di una conversazione tra l'utente corrente e l'utente con id 1
+
+```shell```
+curl https://timerepublik.com/api/v1/me/conversations.json \
+    --data "conversation[messages_attributes][][text]=prova&conversation[messages_attributes][][user_id]=1&other_user_id=1&conversation[post_id]=1072902424" \
+    -H "Authorization: Bearer 3c11bb8c4c78180bba0f3c86984ff2e6b8a6c3cbdf5e1c125a26e196d19e115b"
+``` 
+
+```json
+{
+  "id": 4,
+  "post_id": null,
+  "participants_count": 0,
+  "updated_at": "2015-07-09T14:13:40.850Z",
+  "last_message": {
+    "id": 8,
+    "user_id": 1010,
+    "conversation_id": 4,
+    "text": "prova",
+    "file": {
+      "url": "fallbacks/attachment_default.png",
+      "preview": {
+        "url": "fallbacks/attachment_preview.png"
+      },
+      "bigger_preview": {
+        "url": "fallbacks/attachment_bigger_preview.png"
+      },
+      "small_preview": {
+        "url": "fallbacks/attachment_small_preview.png"
+      },
+      "small_retina_preview": {
+        "url": "fallbacks/attachment_small_retina_preview.png"
+      },
+      "message_preview": {
+        "url": "fallbacks/attachment_message_preview.png"
+      },
+      "message_preview_retina": {
+        "url": "fallbacks/attachment_message_preview_retina.png"
+      }
+    },
+    "created_at": "2015-07-09T14:13:41.234Z",
+    "updated_at": "2015-07-09T14:13:41.234Z"
+  },
+  "user_ids": [
+    1010,
+    1
+  ],
+  "active_conversation": true,
+  "post": null,
+  "participants": [
+    {
+      "id": 7
+    },
+    {
+      "id": 8
+    }
+  ],
+  "messages": [
+    {
+      "id": 8,
+      "user_id": 1010,
+      "text": "prova",
+      "file": null,
+      "updated_at": "2015-07-09T14:13:41.234Z"
+    }
+  ],
+  "deals": []
+}
+```
+
+Si puo' iniziare una nuova conversazione tra 2 utenti semplicemente conoscendo l'id dell'utente che si vuole contattare, è possibile associare la conversazione anche ad una richiesta esistente.
+
+Endpoint: 
+`POST: https://timerepublik.com/api/v1/me/conversations.json`
+
+Non è possibile creare piu' di una conversazione tra 2 utenti. 
+E' necessario riutilizzare la conversazione esistente, 
+qunado si aggiorna una conversazione la conversazione ritorna attiva. 
+
+I partecipanti rappresentano un utente impegnato in una conversazione.
+
+
+### Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+user_id|integer| (obbligatorio) Indica l'id utente con il quale iniziare una conversazione. 
+conversation[post_id]|integer| l'id della richiesta esistente da associare alla conversazione.   
+conversation[messages_attributes][user_id]|integer| L'id utente corrente, obbligatorio
+conversation[messages_attributes][text]|text| il testo del primo messaggio, obbligatorio
+conversation[messages_attributes][file]|file| un file allegato multipart, opzionale
