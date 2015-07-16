@@ -1,3 +1,0 @@
-  curl http://localhost:3000/api/v1/me/conversations/3.json \
-    --data "conversation[messages_attributes][][text]=prova2" \
-    -H "Authorization: Bearer 3c11bb8c4c78180bba0f3c86984ff2e6b8a6c3cbdf5e1c125a26e196d19e115b"
