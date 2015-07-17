@@ -1,101 +1,424 @@
-# Scambiare Tempo
+# Accordi / Scambiare tempo
 
 Tramite le api è possibile trasferire il tempo disponibile da un utente ad un altro. 
 
+Lo scambio di tempo è rappresentato dalla creazione di un 'Deal'
+
+Un accordo viene creato tipicamente "chiedendo tempo" dall'utente che ha prestato un servizio.
+
 Gli scambi di tempo devono essere collegati ad una conversazione ed opzionalmente ad una richiesta.
 
-Unica eccezzione sono gli scambi di tempo effettuati tramite InstaPay.
+Unica eccezione sono gli scambi di tempo effettuati tramite InstaPay.
 
-## Trasferire del tempo ad un altro utente
+## Creazione di un accordo (richiedere tempo)
 
-> Esempio di creazione di una conversazione tra l'utente corrente e l'utente con id 1
+> Esempio di creazione di un nuovo Deal collegato alla conversazione con id 1, vengono richeisti 600 secondi
 
 ```shell```
-curl https://timerepublik.com/api/v1/me/conversations.json \
-    --data "conversation[messages_attributes][][text]=prova&conversation[messages_attributes][][user_id]=1&other_user_id=1&conversation[post_id]=1072902424" \
-    -H "Authorization: Bearer 3c11bb8c4c78180bba0f3c86984ff2e6b8a6c3cbdf5e1c125a26e196d19e115b"
+curl --data 'deal[time]=600&deal[talent_id]=5' 'https://timerepublik.com/api/v1/me/conversations/1/deals.json' \
+  -H "Authorization: Bearer ec3d6cafacec45ab7ebbdab1ce12d4c2bf53a62c37046dd3ef0f8ca636e1ddce"
 ``` 
 
 ```json
 {
-  "id": 4,
-  "post_id": null,
-  "participants_count": 0,
-  "updated_at": "2015-07-09T14:13:40.850Z",
-  "last_message": {
-    "id": 8,
-    "user_id": 1010,
-    "conversation_id": 4,
-    "text": "prova",
-    "file": {
-      "url": "fallbacks/attachment_default.png",
-      "preview": {
-        "url": "fallbacks/attachment_preview.png"
-      },
-      "bigger_preview": {
-        "url": "fallbacks/attachment_bigger_preview.png"
-      },
-      "small_preview": {
-        "url": "fallbacks/attachment_small_preview.png"
-      },
-      "small_retina_preview": {
-        "url": "fallbacks/attachment_small_retina_preview.png"
-      },
-      "message_preview": {
-        "url": "fallbacks/attachment_message_preview.png"
-      },
-      "message_preview_retina": {
-        "url": "fallbacks/attachment_message_preview_retina.png"
-      }
-    },
-    "created_at": "2015-07-09T14:13:41.234Z",
-    "updated_at": "2015-07-09T14:13:41.234Z"
-  },
-  "user_ids": [
-    1010,
-    1
-  ],
-  "active_conversation": true,
-  "post": null,
-  "participants": [
-    {
-      "id": 7
-    },
-    {
-      "id": 8
-    }
-  ],
-  "messages": [
-    {
-      "id": 8,
-      "user_id": 1010,
-      "text": "prova",
-      "file": null,
-      "updated_at": "2015-07-09T14:13:41.234Z"
-    }
-  ],
-  "deals": []
+  "id": 2,
+  "conversation_id": 1,
+  "talent_id": 5,
+  "performer_id": 1010,
+  "payer_id": 1,
+  "request_id": null,
+  "time": 600,
+  "dealed_at": null,
+  "rating": null,
+  "rating1": null,
+  "rating2": null,
+  "rating3": null,
+  "rating4": null,
+  "rating5": null,
+  "rating_message": null,
+  "rating_message_reply": null,
+  "created_at": "2015-07-17T08:24:47.838Z",
+  "updated_at": "2015-07-17T08:24:47.838Z",
+  "slug": "accordo-tra-enrico-e-andrea-c8d0b379427d5d44eb76518e3c39847f",
+  "done": false
 }
 ```
 
-Si puo' iniziare una nuova conversazione tra 2 utenti semplicemente conoscendo l'id dell'utente che si vuole contattare, è possibile associare la conversazione anche ad una richiesta esistente.
+La prima fase per completare un accordo è la richiesta di tempo dalla parte dell'utente che ha svolto un servizio.
 
 Endpoint: 
-`POST: https://timerepublik.com/api/v1/me/conversations.json`
 
-Non è possibile creare piu' di una conversazione tra 2 utenti. 
-E' necessario riutilizzare la conversazione esistente, 
-qunado si aggiorna una conversazione la conversazione ritorna attiva. 
-
-I partecipanti rappresentano un utente impegnato in una conversazione.
+`POST: https://timerepublik.com/api/v1/me/conversations/:CONVERSATION_ID/deals.json`
 
 
 ### Parametri accettati
 
 Parameter | Type | Description
 --------- | ------- | -----------
-user_id|integer| (obbligatorio) Indica l'id utente con il quale iniziare una conversazione. 
-conversation[post_id]|integer| l'id della richiesta esistente da associare alla conversazione.   
-conversation[messages_attributes][user_id]|integer| L'id utente corrente, obbligatorio
-conversation[messages_attributes][text]|text| il testo del primo messaggio, obbligatorio
-conversation[messages_attributes][file]|file| un file allegato multipart, opzionale
+deal[time]||integer| il tempo richiesto in secondi
+deal[talent_id]| opzionalmente il talento relativo al servizio svolto
+
+## Confermare un accordo
+
+
+> In seguito l'altro utente puo' confermare il pagamento (access_token di utente 1)
+
+```shell```
+curl -X PUT --data 'deal[rating]=3&deal[rating_message]=perfetto&deal[request_id]=1072902424' 'https://timerepublik.com/api/v1/me/conversations/1/deals/2.json' \
+  -H "Authorization: Bearer b0e6d0a347b3b056fc9d91accd0dcd3956cd1f922e28073d4a94da980ee99e03"
+``` 
+
+```json
+{
+  "id": 2,
+  "conversation_id": 1,
+  "talent_id": 5,
+  "performer_id": 1010,
+  "payer_id": 1,
+  "request_id": 1072902424,
+  "time": 600,
+  "dealed_at": null,
+  "rating": 3.0,
+  "rating1": null,
+  "rating2": null,
+  "rating3": null,
+  "rating4": null,
+  "rating5": null,
+  "rating_message": "perfetto",
+  "rating_message_reply": null,
+  "created_at": "2015-07-17T08:24:47.000Z",
+  "updated_at": "2015-07-17T08:36:09.875Z",
+  "slug": "accordo-tra-enrico-e-andrea-c8d0b379427d5d44eb76518e3c39847f",
+  "done": true
+}
+```
+
+Se un utente che riceve una richiesta di scambio tempo la trova legittima puo' confermarla Modificando il deal.
+
+Un deal a questo punto puo' considerarsi concluso (done=true)
+
+Endpoint:
+
+`PUT: https://timerepublik.com/api/v1/me/conversations/:CONVERSATION_ID/deals/:DEAL_ID.json`
+
+### Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+deal[rating]|float (0..5)| La votazione da 0 a 5 del servizio
+deal[rating_message]|string| un testo di almeno 5 caratteri con la valutazione del serivizo
+deal[rating_1]|float (0..5)| valutazione dettagliata rating puntualità
+deal[rating_2]|float (0..5)| valutazione dettagliata rating comunicazione
+deal[rating_3]|float (0..5)| valutazione dettagliata rating qualità
+deal[request_id]| opzionalmente il talento relativo al servizio svolto
+
+## Modificare un accordo
+
+Se non si arriva subito ad un accordo l'utente che l'ha generato puo' modificare il tempo richiesto
+
+Endpoint:
+
+`PUT: https://timerepublik.com/api/v1/me/conversations/:CONVERSATION_ID/deals/:DEAL_ID.json`
+
+### Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+deal[time]|integer| Il nuovo tempo richiesto
+
+## Messaggio di ringraziamento
+
+> Per terminare la transazione l'utente che ha eseguito la richiesta puo' lasciare un messaggio di ringraziamento
+
+
+```shell```
+curl -X PUT --data 'deal[rating]=3&deal[rating_message_reply]=thanks' 'https://timerepublik.com/api/v1/me/conversations/1/deals/2.json' \
+  -H "Authorization: Bearer ec3d6cafacec45ab7ebbdab1ce12d4c2bf53a62c37046dd3ef0f8ca636e1ddce"
+``` 
+
+
+```json
+{
+  "id": 2,
+  "conversation_id": 1,
+  "talent_id": 5,
+  "performer_id": 1010,
+  "payer_id": 1,
+  "request_id": 1072902424,
+  "time": 600,
+  "dealed_at": "2015-07-17T08:36:09.000Z",
+  "rating": 3.0,
+  "rating1": null,
+  "rating2": null,
+  "rating3": null,
+  "rating4": null,
+  "rating5": null,
+  "rating_message": "perfetto",
+  "rating_message_reply": "thanks",
+  "created_at": "2015-07-17T08:24:47.000Z",
+  "updated_at": "2015-07-17T08:42:37.503Z",
+  "slug": "accordo-tra-enrico-e-andrea-c8d0b379427d5d44eb76518e3c39847f",
+  "done": true
+}
+```
+
+
+`PUT: https://timerepublik.com/api/v1/me/conversations/:CONVERSATION_ID/deals/:DEAL_ID.json`
+
+### Parametri accettati
+
+Parameter | Type | Description
+--------- | ------- | -----------
+deal[rating_message_reply]|string| Un opzionale messaggio di ringraziamento dell'utente
+
+## Lista degli accordi di un utente
+
+> Esempio
+
+```shell
+curl 'https://timerepublik.com/api/v1/me/deals.json' \
+  -H "Authorization: Bearer ec3d6cafacec45ab7ebbdab1ce12d4c2bf53a62c37046dd3ef0f8ca636e1ddce"
+```
+
+```json```
+[
+  {
+    "id": 1,
+    "conversation_id": 1,
+    "talent_id": null,
+    "performer_id": 1010,
+    "payer_id": 1,
+    "request_id": null,
+    "time": 600,
+    "dealed_at": "2015-07-15T10:15:12.000Z",
+    "rating": 3.0,
+    "rating1": null,
+    "rating2": null,
+    "rating3": null,
+    "rating4": null,
+    "rating5": null,
+    "rating_message": "ottimo!",
+    "rating_message_reply": "kljlkjlkjlk",
+    "created_at": "2015-07-15T10:14:46.000Z",
+    "updated_at": "2015-07-16T16:14:55.000Z",
+    "slug": "68d0979ff56a657c31ffd0cae13d1215",
+    "done": true
+  },
+  {
+    "id": 2,
+    "conversation_id": 1,
+    "talent_id": 5,
+    "performer_id": 1010,
+    "payer_id": 1,
+    "request_id": 1072902424,
+    "time": 600,
+    "dealed_at": "2015-07-17T08:36:09.000Z",
+    "rating": 3.0,
+    "rating1": null,
+    "rating2": null,
+    "rating3": null,
+    "rating4": null,
+    "rating5": null,
+    "rating_message": "perfetto",
+    "rating_message_reply": "thanks",
+    "created_at": "2015-07-17T08:24:47.000Z",
+    "updated_at": "2015-07-17T08:42:37.000Z",
+    "slug": "accordo-tra-enrico-e-andrea-c8d0b379427d5d44eb76518e3c39847f",
+    "done": true
+  },
+  {
+    "id": 3,
+    "conversation_id": 1,
+    "talent_id": 5,
+    "performer_id": 1010,
+    "payer_id": 1,
+    "request_id": null,
+    "time": 600,
+    "dealed_at": "2015-07-17T08:39:46.000Z",
+    "rating": 3.0,
+    "rating1": 3.0,
+    "rating2": 4.0,
+    "rating3": 3.0,
+    "rating4": null,
+    "rating5": null,
+    "rating_message": "testo",
+    "rating_message_reply": null,
+    "created_at": "2015-07-17T08:39:20.000Z",
+    "updated_at": "2015-07-17T08:39:46.000Z",
+    "slug": "accordo-tra-enrico-e-andrea-00867ee5e132670d9864d8afceb38a79",
+    "done": true
+  }
+]
+```
+
+L'endpoint permette di ottenere la lista dettagliata dello storico degli accordi di un utente
+
+Endpoint: 
+
+`GET: https://timerepublik.com/api/v1/me/deals.json`
+
+
+
+
+## Dettaglio di un accordo
+
+> Esempio
+
+```shell
+curl 'https://timerepublik.com/api/v1/me/deals/3.json' \
+  -H "Authorization: Bearer ec3d6cafacec45ab7ebbdab1ce12d4c2bf53a62c37046dd3ef0f8ca636e1ddce"
+```
+
+```json```
+{
+  "id": 3,
+  "conversation_id": 1,
+  "talent_id": 5,
+  "performer_id": 1010,
+  "payer_id": 1,
+  "request_id": null,
+  "time": 600,
+  "dealed_at": "2015-07-17T08:39:46.000Z",
+  "rating": 3.0,
+  "rating1": 3.0,
+  "rating2": 4.0,
+  "rating3": 3.0,
+  "rating4": null,
+  "rating5": null,
+  "rating_message": "testo",
+  "rating_message_reply": null,
+  "created_at": "2015-07-17T08:39:20.000Z",
+  "updated_at": "2015-07-17T08:39:46.000Z",
+  "slug": "accordo-tra-enrico-e-andrea-00867ee5e132670d9864d8afceb38a79",
+  "done": true,
+  "conversation": {
+    "id": 1,
+    "post_id": 1072902424,
+    "participants_count": 2,
+    "updated_at": "2015-07-17T08:42:37.000Z",
+    "last_message": {
+      "id": 21,
+      "user_id": 1,
+      "conversation_id": 1,
+      "text": "si",
+      "file": {
+        "url": "fallbacks/attachment_default.png",
+        "preview": {
+          "url": "fallbacks/attachment_preview.png"
+        },
+        "bigger_preview": {
+          "url": "fallbacks/attachment_bigger_preview.png"
+        },
+        "small_preview": {
+          "url": "fallbacks/attachment_small_preview.png"
+        },
+        "small_retina_preview": {
+          "url": "fallbacks/attachment_small_retina_preview.png"
+        },
+        "message_preview": {
+          "url": "fallbacks/attachment_message_preview.png"
+        },
+        "message_preview_retina": {
+          "url": "fallbacks/attachment_message_preview_retina.png"
+        }
+      },
+      "created_at": "2015-07-15T10:14:26.000Z",
+      "updated_at": "2015-07-15T10:14:26.000Z"
+    },
+    "user_ids": [
+      1010,
+      1
+    ],
+    "active_conversation": true,
+    "messages": [
+      {
+        "id": 1,
+        "user_id": 1010,
+        "text": "messaggio modificato",
+        "file": null,
+        "updated_at": "2015-07-14T12:48:34.000Z"
+      },
+      {
+        "id": 2,
+        "user_id": 1010,
+        "text": "nuovo messaggio",
+        "file": null,
+        "updated_at": "2015-07-14T12:23:01.000Z"
+      }
+    ]
+  },
+  "talent": {
+    "id": 5,
+    "name": "Heating Technician",
+    "position": 0.0,
+    "slug": null,
+    "icon": null,
+    "tags_count": 1,
+    "talent_category_id": 5,
+    "disabled": false,
+    "created_at": "2015-07-10T13:10:00.000Z",
+    "updated_at": "2015-07-10T13:10:00.000Z"
+  },
+  "performer": {
+    "id": 1010,
+    "email": "azaupa@gmail.com",
+    "username": "andreazaupa",
+    "first_name": "Andrea",
+    "last_name": "Zaupa",
+    "trustmeter": 62
+  },
+  "payer": {
+    "id": 1,
+    "email": "private",
+    "username": "pioz",
+    "first_name": "Enrico",
+    "last_name": "Pilotto",
+    "trustmeter": 99
+  },
+  "request": null
+}
+```
+
+L'endpoint permette di ottenere il dettaglio di un accordo rappresentato da uno specifico DEAL_ID
+
+Endpoint: 
+
+`GET: https://timerepublik.com/api/v1/me/deals/:DEAL_ID.json`
+
+
+## Annullare un accordo
+
+> Esempio di annullamento di un accordo
+
+```shell
+curl -X DELETE 'https://timerepublik.com/api/v1/me/conversations/1/deals/4.json' \
+  -H "Authorization: Bearer ec3d6cafacec45ab7ebbdab1ce12d4c2bf53a62c37046dd3ef0f8ca636e1ddce"
+```
+
+```json```
+[]
+```
+
+> Esempio di errore
+
+```shell```
+curl -X DELETE 'https://timerepublik.com/api/v1/me/conversations/1/deals/3.json' \
+  -H "Authorization: Bearer ec3d6cafacec45ab7ebbdab1ce12d4c2bf53a62c37046dd3ef0f8ca636e1ddce"
+```
+
+```json
+{
+  "errors": {
+    "base": "Non puoi cancellare un accordo che si sta svolgendo."
+  },
+  "error_code": 2001,
+  "error_message": "Validation Error"
+}
+```
+L'endpoint permette di annullare una richiesta di accordo, la richiesta puo' essere annullata solamente dall'utente
+che l'ha richiesta e soltanto finche quest'ultima non viene accettata.
+
+Endpoint: 
+
+`DELETE: https://timerepublik.com/api/v1/me/conversations/:ID_CONVERSAZIONE/deals/:DEAL_ID.json`
+
