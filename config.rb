@@ -23,7 +23,7 @@ activate :relative_assets
 
 set :relative_links, true
 
-activate :i18n
+activate :i18n, mount_at_root: :it
 
 # Build-specific configuration
 configure :build do
