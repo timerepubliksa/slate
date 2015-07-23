@@ -3,8 +3,6 @@
 
 require '.localeapp/config'
 
-activate :i18n, :path => "/:locale/", :langs => [:en, :it], :mount_at_root => :it
-
 set :css_dir, 'stylesheets'
 
 set :js_dir, 'javascripts'
@@ -22,7 +20,10 @@ activate :syntax
 
 # This is needed for Github pages, since they're hosted on a subdomain
 activate :relative_assets
+
 set :relative_links, true
+
+activate :i18n
 
 # Build-specific configuration
 configure :build do
