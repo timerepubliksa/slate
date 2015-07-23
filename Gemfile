@@ -30,3 +30,5 @@ end
 gem "rake", "~> 10.4.0"
 
 gem 'therubyracer', :platforms => :ruby
+
+gem 'capistrano-middleman', require: false
