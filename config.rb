@@ -1,6 +1,9 @@
-activate :i18n,  mount_at_root: :it
+# activate :i18n,  mount_at_root: :it
+# activate :i18n
 
 require '.localeapp/config'
+
+activate :i18n, :path => "/:locale/", :langs => [:en, :it], :mount_at_root => :it
 
 set :css_dir, 'stylesheets'
 
