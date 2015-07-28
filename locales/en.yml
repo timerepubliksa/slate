@@ -1,6 +1,34 @@
 en:
+  activities:
+    body: 
   auth:
+    body: 
+  awards:
+    body: 
+  coversations:
+    body: 
+  deals:
     body: 
   index:
     body: 
     title: 
+  like:
+    body: 
+  main_body: 
+  main_title: 
+  registration:
+    body: 
+  request:
+    body: 
+  search:
+    body: 
+  system_message:
+    body: 
+  talents:
+    body: 
+  timetrackers:
+    body: 
+  user_me:
+    body: 
+  users:
+    body: 

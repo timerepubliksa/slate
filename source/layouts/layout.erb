@@ -24,7 +24,7 @@ under the License.
 
     <%= stylesheet_link_tag :screen, media: :screen %>
     <%= stylesheet_link_tag :print, media: :print %>
-    <script src="javascripts/jquery.min.js"></script>
+    <script src="../javascripts/jquery.min.js"></script>
     <% if current_page.data.search %>
       <%= javascript_include_tag  "all" %>
     <% else %>
@@ -73,8 +73,10 @@ under the License.
           <% current_page.data.toc_footers.each do |footer| %>
             <li><%= footer %></li>
           <% end %>
+          <li><%if I18n.locale == :"it"%><a href="../en">English version</a><%else%><a href="../it">Read in Italian</a><%end%></li>
         </ul>
       <% end %>
+
     </div>
     <div class="page-wrapper">
       <div class="dark-box"></div>
