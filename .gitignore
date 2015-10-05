@@ -20,4 +20,4 @@ build/
 _yardoc
 doc/
 .idea/
-.localeapp
+.localeapp/config.rb
