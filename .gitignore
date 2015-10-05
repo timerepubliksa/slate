@@ -21,3 +21,4 @@ _yardoc
 doc/
 .idea/
 .localeapp/config.rb
+.localeapp/log.yml
